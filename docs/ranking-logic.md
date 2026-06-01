@@ -11,8 +11,8 @@ The Today feed should prioritize signals that are:
 3. Supported by trustworthy sources.
 4. Recent.
 5. Aligned with the user's chosen analysis mode.
-6. Aligned with event priority settings.
-7. Consistent with source mix and evidence preferences.
+6. Aligned with simple event-type base nudges.
+7. Consistent with source mix and the small v1 settings model.
 
 ## Ranking output
 
@@ -39,7 +39,7 @@ Suggested v1 score is a 0-100 style score. It can exceed 100 before final clampi
 | Source quality | 15 |
 | Confidence | 10 |
 | Recency | 10 |
-| Event priority | 10 |
+| Event type base nudge | 10 |
 | Analysis mode fit | 5 |
 | Interaction penalties | negative |
 
@@ -144,26 +144,26 @@ Suggested recency scoring:
 
 The active time window should filter out signals older than the selected range.
 
-## Event priority score
+## Event type emphasis
 
-Map signal event types to `UserSettings.eventPriorities` values.
+Do not build event-priority sliders in v1. Event type emphasis should come from simple defaults and the active analysis mode. For example, Scientist can lightly boost publications and clinical data, while Investor can lightly boost catalysts, regulatory events, financing, and deals.
 
-| Signal event type | Settings key |
-| --- | --- |
-| Clinical Data Readout | clinicalDataReadouts |
-| Regulatory Update | fdaRegulatoryEvents |
-| Clinical Trial Change | clinicalTrialChanges |
-| Publication | newPublications |
-| Deal / Financing | maLicensing or financing |
-| Company Update | commercialLaunches or executiveChanges depending on subtype |
-| Safety Signal | safetySignals |
-| General Commentary | generalCommentary |
+Suggested event-type base nudges:
 
-Suggested scoring:
+| Event type | Base nudge |
+| --- | ---: |
+| Clinical Data Readout | 4 |
+| Regulatory Update | 4 |
+| Clinical Trial Change | 3 |
+| Safety Signal | 4 |
+| Publication | 3 |
+| Deal / Financing | 3 |
+| Company Update | 2 |
+| Commercial Update | 2 |
+| Competitive Landscape | 2 |
+| General Commentary | 0 |
 
-```ts
-const eventPriorityScore = Math.round((priorityValue / 100) * 10);
-```
+Use these as transparent constants in code. Do not expose them as user settings in v1.
 
 ## Analysis mode score
 
@@ -299,7 +299,7 @@ function rankSignals({
     .filter((signal) => !hiddenSignalIds.includes(signal.id))
     .filter((signal) => isWithinTimeWindow(signal.date, controls.timeWindow))
     .filter((signal) => passesSectionFilter(signal, controls.activeSection))
-    .filter((signal) => passesEvidencePreferences(signal, settings.evidencePreferences))
+    .filter((signal) => passesSimpleSettings(signal, settings))
     .filter((signal) => passesSourceMix(signal, controls.sourceMix))
     .map((signal) => {
       const reasons: string[] = [];
@@ -312,7 +312,7 @@ function rankSignals({
         getSourceQualityScore(signal) +
         getConfidenceScore(signal) +
         getRecencyScore(signal.date) +
-        getEventPriorityScore(signal, settings.eventPriorities) +
+        getEventTypeBaseNudge(signal.eventType) +
         getAnalysisModeScore(signal, controls.analysisMode) +
         getInteractionPenalty(signal, lessLikeThisSignalIds, signals);
 
@@ -328,7 +328,7 @@ function rankSignals({
 The detail panel's “Why you are seeing this” section can combine:
 
 - Watchlist matches.
-- Event priority match.
+- Event type relevance.
 - Source confidence.
 - Recency.
 - Analysis mode fit.

@@ -242,7 +242,7 @@ Ranking combines signal-level evidence with user preferences:
 
 - Watchlist matches.
 - Analysis mode.
-- Event priority settings.
+- Event-type emphasis and analysis mode nudges.
 - Source preferences.
 - Evidence preferences.
 - User feedback.

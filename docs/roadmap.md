@@ -20,12 +20,13 @@
 - Source architecture.
 - README updates.
 - AGENTS.md coding-agent instructions.
+- v1 build plan with Today-first implementation order.
 
 ## Phase 1: Mock-data frontend MVP
 
 ### Goals
 
-Build the clickable local prototype using only mock data.
+Build the clickable local prototype using only mock data, starting with the Today page and its source-backed signal workflow.
 
 ### Technical scope
 
@@ -54,11 +55,16 @@ Build the clickable local prototype using only mock data.
 ### Success criteria
 
 - User can run locally and click around a convincing prototype.
-- Today page feels like a daily intelligence briefing.
+- Today page is clearly the center of the product and the most polished route.
+- Every visible signal has source transparency, a confidence label, and “why it matters.”
 - Source quality is visually obvious.
+- Settings are practical defaults, not an overwhelming preference center.
 - Controls feel useful even though state is local.
 
 ## Phase 2: RSS ingestion foundation
+
+Do not begin this phase until the mock-data MVP in Phase 1 is built and reviewed.
+
 
 ### Goals
 

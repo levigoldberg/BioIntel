@@ -253,35 +253,28 @@ The detail panel should make the five core questions obvious.
 
 ## Settings page
 
+The Settings page should be practical and short. It sets defaults for Today rather than exposing a complex preference center.
+
 ```text
 ┌────────────────────────────────────────────────────────────────────┐
 │ Settings                                                           │
-│ Tune how BioIntel builds your briefing.                            │
+│ Keep the daily briefing focused without over-configuring v1.        │
 ├────────────────────────────────────────────────────────────────────┤
-│ Briefing preferences                                               │
+│ Briefing defaults                                                  │
 │ Default length [5] [10] [20]                                       │
 │ Source mix [Primary only] [Balanced] [Broad]                       │
 │ Analysis mode [Scientist] [Consultant] [Investor] [Beginner]       │
 │ Time window [24h] [3d] [7d]                                        │
-│ Toggles: low confidence, speculative, duplicates, why it matters   │
+│ Detail depth [Quick skim] [Standard] [Detailed analyst]            │
 ├────────────────────────────────────────────────────────────────────┤
-│ Event priorities                                                   │
-│ Clinical data readouts    [-----●----]                             │
-│ FDA / regulatory events   [------●---]                             │
-│ Clinical trial changes    [------●---]                             │
-│ New publications          [----●-----]                              │
-│ M&A / licensing           [-----●----]                              │
-│ Financing                 [---●------]                              │
-│ Commercial launches       [---●------]                              │
-│ Safety signals            [-------●--]                              │
-│ Executive changes         [--●-------]                              │
-│ General commentary        [-●--------]                              │
+│ Trust preferences                                                  │
+│ [ ] Include low-confidence signals                                 │
+│ [ ] Include speculative / noisy signals                            │
+│ [x] Require primary confirmation for major claims                  │
 ├────────────────────────────────────────────────────────────────────┤
-│ Evidence preferences                                               │
-│ Toggles for preclinical, animal, preprints, abstracts, claims, etc. │
-├────────────────────────────────────────────────────────────────────┤
-│ Tone and depth                                                     │
-│ Primary mode, secondary mode, detail level                         │
+│ v1 note                                                            │
+│ Advanced event-priority sliders, notification settings, account     │
+│ settings, and source credentials are deferred.                     │
 └────────────────────────────────────────────────────────────────────┘
 ```
 

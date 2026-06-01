@@ -255,43 +255,30 @@ As a user, I want to know whether a source requires primary confirmation so that
 
 ## Epic 7: Settings
 
-### Story 7.1: Set briefing defaults
+### Story 7.1: Set practical briefing defaults
 
-As a user, I want to configure default length, source mix, analysis mode, and time window so that the product fits my workflow.
-
-**Acceptance criteria**
-
-- Settings page includes briefing preference controls.
-- Controls update local state.
-- Include toggles for low-confidence items, speculative items, duplicate coverage, why-it-matters, and watch-next.
-
-### Story 7.2: Tune event priorities
-
-As a user, I want to prioritize clinical data, regulatory events, publications, deals, financing, safety, and other event types so that ranking aligns with my job.
+As a user, I want a small set of defaults so that BioIntel fits my workflow without making me configure a complex system.
 
 **Acceptance criteria**
 
-- Event priorities are represented as sliders or segmented controls.
-- Changing a priority updates local state.
-- Ranking logic can consume these values.
+- Settings include default briefing length: 5, 10, or 20.
+- Settings include default source mix: Primary only, Balanced, or Broad.
+- Settings include default analysis mode: Scientist, Consultant, Investor, or Beginner.
+- Settings include default time window: Last 24h, 3 days, or 7 days.
+- Settings include default detail depth: Quick skim, Standard, or Detailed analyst.
+- Controls update local state only.
 
-### Story 7.3: Tune evidence preferences
+### Story 7.2: Set simple trust preferences
 
-As a user, I want to decide whether to include preclinical studies, animal studies, preprints, conference abstracts, and company claims so that I can control evidence quality.
-
-**Acceptance criteria**
-
-- Evidence toggles update local state.
-- Require-primary-source and hide-press-release-only controls are present.
-
-### Story 7.4: Tune tone and depth
-
-As a user, I want to choose primary mode, secondary mode, and detail level so that the briefing matches my expertise and time available.
+As a user, I want a few trust controls so that I can decide how cautious the briefing should be.
 
 **Acceptance criteria**
 
-- Tone/depth controls include quick skim, standard, and detailed analyst.
-- The selected values update local state.
+- Settings include Include low-confidence signals: on/off.
+- Settings include Include speculative/noisy signals: on/off.
+- Settings include Require primary confirmation for major claims: on/off.
+- Changes update local filtering or labels in the Today briefing.
+- Do not add event-priority sliders, per-evidence-type toggle grids, notification settings, account settings, or source credentials in v1.
 
 ## Epic 8: Archive
 
