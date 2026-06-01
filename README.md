@@ -4,19 +4,45 @@ BioIntel is a personalized biotech intelligence dashboard that transforms biotec
 
 ## Project status
 
-This repository currently contains the **v1 product specification and planning documentation only**. The application has not been built yet.
+BioIntel Build 2 is now a working **frontend-only mock-data prototype** that builds on the Build 1 briefing experience. The current app uses:
 
-The planned v1 application will use:
-
-- Next.js.
+- Next.js App Router.
 - TypeScript.
 - Tailwind CSS.
-- App Router.
 - Local mock data only.
 - React state for interactions.
 - No authentication.
 - No database.
-- No external APIs.
+- No external APIs, scraping, RSS ingestion, Supabase, or OpenAI API calls.
+
+## Build 1 pages
+
+- **Today** — the polished homepage and morning briefing experience with source-backed signal cards, controls initialized from shared Settings, filters, local save/hide/downrank actions, source drill-down, ranking explanations, and responsive detail panels.
+- **Watchlist** — grouped mock watchlist topics with enable/pause, remove, and edit-looking local controls.
+- **Sources** — source registry grouped by source type with local enable/disable toggles and trust cues.
+- **Settings** — practical briefing, evidence, and tone/depth knobs backed by a lightweight client-side preferences context.
+- **Archive** — mock past briefings and saved signals with search and filtering.
+
+## How to install dependencies
+
+```bash
+npm install
+```
+
+## How to run locally
+
+```bash
+npm run dev
+```
+
+Then open the local URL printed by Next.js, usually <http://localhost:3000>.
+
+## How to validate the build
+
+```bash
+npm run lint
+npm run build
+```
 
 ## Documentation
 
@@ -29,30 +55,13 @@ The complete v1 product documentation lives in [`docs/`](./docs):
 - [`docs/ranking-logic.md`](./docs/ranking-logic.md) — mock ranking algorithm, scoring factors, filters, and pseudocode.
 - [`docs/source-architecture.md`](./docs/source-architecture.md) — source registry and future ingestion architecture.
 - [`docs/roadmap.md`](./docs/roadmap.md) — phased roadmap from mock MVP to ingestion, persistence, and daily briefing generation.
-- [`docs/implementation-plan.md`](./docs/implementation-plan.md) — recommended future file structure and build sequence.
+- [`docs/implementation-plan.md`](./docs/implementation-plan.md) — recommended file structure and build sequence.
 - [`docs/v1-build-plan.md`](./docs/v1-build-plan.md) — exact implementation order for the first mock-data MVP build.
-
-## How to install dependencies
-
-There are no application dependencies yet because the app has not been scaffolded.
-
-When the build phase begins, install dependencies after scaffolding the Next.js project, for example:
-
-```bash
-npm install
-```
-
-## How to run locally
-
-There is no runnable app yet. After the future Next.js build is implemented, the expected local command will be:
-
-```bash
-npm run dev
-```
+- [`docs/build-2-demo-qa.md`](./docs/build-2-demo-qa.md) — quick Build 2 demo-readiness checklist.
 
 ## v1 mock-data-only scope
 
-BioIntel v1 should validate the product experience before real ingestion is added. It should use local mock data for:
+BioIntel v1 validates the product experience before real ingestion is added. It uses local mock data for:
 
 - Signals.
 - Source trails.
@@ -61,8 +70,8 @@ BioIntel v1 should validate the product experience before real ingestion is adde
 - User preferences.
 - Archive items.
 
-The v1 build should not include real APIs, external feeds, authentication, or a database unless explicitly requested later.
+The v1 build intentionally does not include real APIs, external feeds, authentication, or a database.
 
 ## Suggested next step
 
-Build the mock-data MVP in the order defined in [`docs/v1-build-plan.md`](./docs/v1-build-plan.md). Real ingestion, Supabase, OpenAI summarization, ClinicalTrials.gov tracking, PubMed integration, and daily briefing generation are intentionally deferred until after the v1 prototype proves the Today-centered signal workflow.
+Build 3 should preserve the mock-data-first boundary while improving the product proof: add persistence for local preferences, richer source-comparison views, saved briefing export, and demo-script polish before introducing real ingestion.

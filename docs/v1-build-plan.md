@@ -183,3 +183,11 @@ Do not build event-priority sliders, dozens of evidence toggles, or a complex pr
 - Advanced ranking personalization.
 - Numeric confidence scores.
 - Automated signal clustering.
+
+## Build 1 implementation status
+
+Build 1 has been implemented as a frontend-only Next.js prototype with local mock data. The app includes Today, Watchlist, Sources, Settings, and Archive pages; all user-facing interactions are local React state only. Real ingestion, persistence, authentication, OpenAI summarization, Supabase, scraping, RSS, and external APIs remain deferred.
+
+## Build 2 implementation status
+
+Build 2 preserves the mock-data-only boundary and adds a lightweight client-side preferences context, Today initialization from Settings defaults, clearer ranking explanations, a source drill-down panel, and a mobile-friendly inline detail panel for the selected signal. Dependency installation, lint, and build validation should be re-run in an environment with npm registry access.

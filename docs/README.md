@@ -1,6 +1,6 @@
 # BioIntel Documentation Index
 
-This folder contains the complete documentation package for BioIntel v1, a planned mock-data MVP for a personalized biotech intelligence dashboard.
+This folder contains the documentation package for BioIntel v1 and the current mock-data frontend prototype.
 
 ## Documents
 
@@ -14,7 +14,7 @@ This folder contains the complete documentation package for BioIntel v1, a plann
    - TypeScript-oriented models for signals, source trails, watchlist items, source definitions, settings, and archive briefings.
 
 4. [`page-wireframes.md`](./page-wireframes.md)
-   - Text wireframes for global layout, Today, Watchlist, Sources, Settings, Archive, signal cards, and detail panels.
+   - Text wireframes for Today, Watchlist, Sources, Settings, Archive, signal cards, and detail panels.
 
 5. [`ranking-logic.md`](./ranking-logic.md)
    - Mock ranking factors, scoring weights, source mix behavior, section filters, and pseudocode.
@@ -31,6 +31,9 @@ This folder contains the complete documentation package for BioIntel v1, a plann
 9. [`v1-build-plan.md`](./v1-build-plan.md)
    - Exact order for the first implementation pass, starting with the Today-centered mock signal experience.
 
+10. [`build-2-demo-qa.md`](./build-2-demo-qa.md)
+    - Quick demo-readiness checklist for the Build 2 mock-data prototype.
+
 ## Current boundary
 
-This is a documentation-only phase. The app should not be built until a future implementation task begins. When implementation starts, build the mock-data MVP from `v1-build-plan.md` before any real ingestion, database, authentication, or AI summarization work.
+The app is now in a frontend-only mock-data prototype phase. Continue to avoid real ingestion, databases, authentication, scraping, RSS, Supabase, and AI summarization until explicitly requested.
