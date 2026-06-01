@@ -1,5 +1,6 @@
 import type { RawSourceItem, SourceFetchResult } from "./types";
 import { cacheKey, getCachedValue, setCachedValue } from "./cache";
+import { fetchWithTimeout } from "./http";
 
 interface ClinicalTrialStudy {
   protocolSection?: {
@@ -98,7 +99,7 @@ export async function fetchClinicalTrialItems(
       "query.term": buildSearchTerm(searchTerms),
       pageSize: String(Math.min(limit, 10)),
     });
-    const response = await fetch(
+    const response = await fetchWithTimeout(
       `https://clinicaltrials.gov/api/v2/studies?${params}`,
       { cache: "no-store" },
     );

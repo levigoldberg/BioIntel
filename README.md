@@ -13,19 +13,19 @@ The app now uses a server-side Next.js ingestion route for live public sources:
 
 The Today page starts with a general biotech/pharma overview before showing any watchlist intersections. The site does not use AI summarization, authentication, Supabase, a database, scraping, paid sources, or browser-side external source calls.
 
-## Hosting
+## Vercel Deployment
+
+BioIntel is configured for Vercel through the imported GitHub repository. Pushes to the deployment branch should build with Vercel's default Next.js settings:
+
+- Framework preset: Next.js.
+- Install command: `npm install`.
+- Build command: `npm run build`.
+- Output directory: Next.js default.
+- Required environment variables: none for the current public-source build.
 
 GitHub Pages is not sufficient for this version of BioIntel because the app depends on a Next.js route handler at `/api/signals` for server-side fetching, caching, normalization, and error isolation.
 
-Use a host that can run Next.js server routes, such as:
-
-- Vercel.
-- Netlify with Next.js runtime support.
-- Render.
-- Railway.
-- Fly.io.
-
-GitHub Pages would only work if BioIntel became a static export and the ingestion API moved to a separate backend.
+The `/api/signals` route runs dynamically on Vercel, keeps external source fetching server-side, and bounds live source requests so one slow public source does not block the full function.
 
 ## App Pages
 

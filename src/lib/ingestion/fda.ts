@@ -1,5 +1,6 @@
 import type { RawSourceItem, SourceFetchResult } from "./types";
 import { cacheKey, getCachedValue, setCachedValue } from "./cache";
+import { fetchWithTimeout } from "./http";
 
 const fdaFeeds = [
   {
@@ -53,6 +54,14 @@ function matchesTopics(title: string, summary: string, topics: string[]) {
   return topics.some((topic) => text.includes(topic.toLowerCase()));
 }
 
+function parseDate(value: string) {
+  if (!value) return new Date().toISOString();
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime())
+    ? new Date().toISOString()
+    : parsed.toISOString();
+}
+
 export async function fetchFdaItems(
   searchTerms: string[],
   limit: number,
@@ -64,7 +73,7 @@ export async function fetchFdaItems(
   try {
     const feedResults = await Promise.all(
       fdaFeeds.map(async (feed) => {
-        const response = await fetch(feed.url, { cache: "no-store" });
+        const response = await fetchWithTimeout(feed.url, { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`${feed.name} returned ${response.status}`);
         }
@@ -81,9 +90,7 @@ export async function fetchFdaItems(
       )
       .slice(0, limit)
       .map(({ feed, item }, index) => {
-        const publishedAt = item.pubDate
-          ? new Date(item.pubDate).toISOString()
-          : new Date().toISOString();
+        const publishedAt = parseDate(item.pubDate);
         const url = item.link || item.guid || feed.url;
 
         return {

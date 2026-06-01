@@ -34,3 +34,4 @@ These instructions apply to the entire BioIntel repository.
 - Always summarize what changed and what was tested.
 - Keep README and docs aligned with implementation changes.
 - If product scope changes, update the relevant documents in `docs/`.
+- After completing a full requested prompt, commit the changes, push them to GitHub, and merge them into the deployment branch when the working tree is clean and tests pass.

@@ -62,6 +62,8 @@ It returns:
 
 If one source fails, the route still returns available partial results.
 
+On Vercel, the route is explicitly dynamic and has a bounded function duration. Each public-source request also has its own timeout, so slow source responses are reported in `sourceStatuses` instead of blocking the whole briefing.
+
 ## Caching
 
 The current cache is in-memory and process-local. It improves local responsiveness but is not a durable ingestion store.

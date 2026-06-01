@@ -1,4 +1,5 @@
 import { cacheKey, getCachedValue, setCachedValue } from "./cache";
+import { fetchWithTimeout } from "./http";
 import type { RawSourceItem, SourceFetchResult } from "./types";
 
 const newsFeeds = [
@@ -100,7 +101,7 @@ export async function fetchIndustryNewsItems(
   try {
     const feedResults = await Promise.all(
       newsFeeds.map(async (feed) => {
-        const response = await fetch(feed.url, { cache: "no-store" });
+        const response = await fetchWithTimeout(feed.url, { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`${feed.name} returned ${response.status}`);
         }

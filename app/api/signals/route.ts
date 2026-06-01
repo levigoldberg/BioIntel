@@ -11,6 +11,7 @@ import { fetchPubMedItems } from "@/src/lib/ingestion/pubmed";
 import type { IngestionQuery, SourceFetchResult } from "@/src/lib/ingestion/types";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 20;
 
 function parseLimit(value: string | null) {
   const parsed = Number(value);

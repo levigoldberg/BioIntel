@@ -1,5 +1,6 @@
 import type { RawSourceItem, SourceFetchResult } from "./types";
 import { cacheKey, getCachedValue, setCachedValue } from "./cache";
+import { fetchWithTimeout } from "./http";
 
 interface PubMedSummary {
   uid: string;
@@ -47,7 +48,7 @@ export async function fetchPubMedItems(
       retmax: String(Math.min(limit, 8)),
       term,
     });
-    const searchResponse = await fetch(
+    const searchResponse = await fetchWithTimeout(
       `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?${searchParams}`,
       { cache: "no-store" },
     );
@@ -72,7 +73,7 @@ export async function fetchPubMedItems(
       retmode: "json",
       id: ids.join(","),
     });
-    const summaryResponse = await fetch(
+    const summaryResponse = await fetchWithTimeout(
       `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?${summaryParams}`,
       { cache: "no-store" },
     );
