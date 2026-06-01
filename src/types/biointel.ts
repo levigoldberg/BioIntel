@@ -9,10 +9,6 @@ export type EventType =
 
 export type ImportanceLevel = "Critical" | "High" | "Medium" | "Low";
 export type RelevanceLabel = "Core watchlist" | "Adjacent" | "Exploratory";
-export type ConfidenceLabel =
-  | "High confidence"
-  | "Medium confidence"
-  | "Low confidence";
 export type SourceStatus =
   | "Primary confirmed"
   | "Primary plus coverage"
@@ -70,6 +66,7 @@ export interface SourceTrailItem {
   role: SourceRole;
   status: SourceStatus;
   requiresPrimaryConfirmation: boolean;
+  sourceUrl?: string;
   note: string;
 }
 
@@ -79,7 +76,6 @@ export interface Signal {
   eventType: EventType;
   importance: ImportanceLevel;
   relevance: RelevanceLabel;
-  confidence: ConfidenceLabel;
   sourceStatus: SourceStatus;
   evidenceStatus: EvidenceStatus;
   tags: SignalTag[];
@@ -127,7 +123,6 @@ export interface BriefingSettings {
   defaultSourceMix: SourceMix;
   defaultAnalysisMode: AnalysisMode;
   defaultTimeWindow: TimeWindow;
-  showLowConfidenceItems: boolean;
   showSpeculativeItems: boolean;
   showDuplicateCoverage: boolean;
   includeWhyItMatters: boolean;

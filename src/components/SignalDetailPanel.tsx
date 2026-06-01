@@ -99,9 +99,8 @@ export function SignalDetailPanel({
         <section className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
           <h3 className="font-bold text-slate-950">Evidence status</h3>
           <p>
-            {signal.evidenceStatus} · {signal.confidence}. Treat
-            sponsor-selected or noisy items as watch-next prompts, not
-            conclusions.
+            {signal.evidenceStatus}. Treat sponsor-selected or noisy items as
+            watch-next prompts, not conclusions.
           </p>
         </section>
       </div>

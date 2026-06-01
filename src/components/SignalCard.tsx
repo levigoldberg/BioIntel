@@ -52,11 +52,11 @@ export function SignalCard({
             {signal.importance}
           </Badge>
           <Badge tone="purple">{signal.relevance}</Badge>
-          <Badge tone={toneForTrust(signal.confidence)}>
-            {signal.confidence}
-          </Badge>
           <Badge tone={toneForTrust(signal.sourceStatus)}>
             {signal.sourceStatus}
+          </Badge>
+          <Badge tone={toneForTrust(signal.evidenceStatus)}>
+            {signal.evidenceStatus}
           </Badge>
         </div>
         <h2 className="mt-3 text-xl font-black leading-tight text-slate-950">

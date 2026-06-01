@@ -8,6 +8,18 @@ import type {
 
 export const mockGeneratedTime = "06:42 AM ET";
 
+const sourceUrls: Record<string, string> = {
+  "ClinicalTrials.gov mock registry": "https://clinicaltrials.gov/",
+  "Clinical trial protocol amendment": "https://clinicaltrials.gov/",
+  "ClinicalTrials.gov status history": "https://clinicaltrials.gov/",
+  "FDA label update": "https://www.fda.gov/drugs",
+  "FDA advisory committee calendar": "https://www.fda.gov/advisory-committees",
+  "FDA meeting-minutes excerpt": "https://www.fda.gov/drugs",
+  "SEC 8-K exhibit": "https://www.sec.gov/edgar/search/",
+  "PubMed abstract": "https://pubmed.ncbi.nlm.nih.gov/",
+  "Patent alert": "https://patents.google.com/",
+};
+
 const primaryTrail = (sourceName: string, note: string) => ({
   sourceName,
   sourceType: "Primary source" as const,
@@ -15,6 +27,7 @@ const primaryTrail = (sourceName: string, note: string) => ({
   role: "Origin" as const,
   status: "Primary confirmed" as const,
   requiresPrimaryConfirmation: false,
+  sourceUrl: sourceUrls[sourceName] ?? "https://www.fda.gov/",
   note,
 });
 
@@ -326,7 +339,6 @@ export const mockSignals: Signal[] = [
     eventType: "Clinical Trial",
     importance: "High",
     relevance: "Core watchlist",
-    confidence: "High confidence",
     sourceStatus: "Primary confirmed",
     evidenceStatus: "Confirmed",
     section: "Clinical Trials",
@@ -382,7 +394,6 @@ export const mockSignals: Signal[] = [
     eventType: "Company Update",
     importance: "Critical",
     relevance: "Core watchlist",
-    confidence: "Medium confidence",
     sourceStatus: "Primary plus coverage",
     evidenceStatus: "Emerging",
     section: "Company Updates",
@@ -443,7 +454,6 @@ export const mockSignals: Signal[] = [
     eventType: "Regulatory",
     importance: "High",
     relevance: "Adjacent",
-    confidence: "Medium confidence",
     sourceStatus: "Primary confirmed",
     evidenceStatus: "Emerging",
     section: "Regulatory",
@@ -499,7 +509,6 @@ export const mockSignals: Signal[] = [
     eventType: "Clinical Trial",
     importance: "High",
     relevance: "Core watchlist",
-    confidence: "Medium confidence",
     sourceStatus: "Primary plus coverage",
     evidenceStatus: "Emerging",
     section: "Clinical Trials",
@@ -556,7 +565,6 @@ export const mockSignals: Signal[] = [
     eventType: "Regulatory",
     importance: "Critical",
     relevance: "Adjacent",
-    confidence: "High confidence",
     sourceStatus: "Primary confirmed",
     evidenceStatus: "Confirmed",
     section: "Regulatory",
@@ -608,7 +616,6 @@ export const mockSignals: Signal[] = [
     eventType: "Deal / Financing",
     importance: "Medium",
     relevance: "Adjacent",
-    confidence: "High confidence",
     sourceStatus: "Primary confirmed",
     evidenceStatus: "Confirmed",
     section: "Deals / Financing",
@@ -665,7 +672,6 @@ export const mockSignals: Signal[] = [
     eventType: "Regulatory",
     importance: "High",
     relevance: "Core watchlist",
-    confidence: "High confidence",
     sourceStatus: "Primary confirmed",
     evidenceStatus: "Confirmed",
     section: "Regulatory",
@@ -717,7 +723,6 @@ export const mockSignals: Signal[] = [
     eventType: "Clinical Trial",
     importance: "Medium",
     relevance: "Exploratory",
-    confidence: "High confidence",
     sourceStatus: "Primary confirmed",
     evidenceStatus: "Confirmed",
     section: "Clinical Trials",
@@ -766,7 +771,6 @@ export const mockSignals: Signal[] = [
     eventType: "Publication",
     importance: "Medium",
     relevance: "Core watchlist",
-    confidence: "High confidence",
     sourceStatus: "Primary confirmed",
     evidenceStatus: "Confirmed",
     section: "Publications",
@@ -823,7 +827,6 @@ export const mockSignals: Signal[] = [
     eventType: "Deal / Financing",
     importance: "Medium",
     relevance: "Core watchlist",
-    confidence: "Medium confidence",
     sourceStatus: "Primary plus coverage",
     evidenceStatus: "Emerging",
     section: "Deals / Financing",
@@ -880,7 +883,6 @@ export const mockSignals: Signal[] = [
     eventType: "Safety Signal",
     importance: "Medium",
     relevance: "Adjacent",
-    confidence: "Low confidence",
     sourceStatus: "Secondary only",
     evidenceStatus: "Conflicting",
     section: "Company Updates",
@@ -897,7 +899,7 @@ export const mockSignals: Signal[] = [
     whyItMatters:
       "Safety narratives can influence prescribing even before causality is established.",
     whyYouAreSeeingThis:
-      "Obesity and GLP-1 combinations are tracked, but this item is low confidence.",
+      "Obesity and GLP-1 combinations are tracked.",
     matchedWatchlistTopics: ["Obesity", "GLP-1 combinations"],
     sourceTrail: [
       {
@@ -937,7 +939,6 @@ export const mockSignals: Signal[] = [
     eventType: "Publication",
     importance: "Medium",
     relevance: "Adjacent",
-    confidence: "High confidence",
     sourceStatus: "Primary confirmed",
     evidenceStatus: "Confirmed",
     section: "Publications",
@@ -984,7 +985,6 @@ export const mockSignals: Signal[] = [
     eventType: "AI Drug Discovery",
     importance: "Low",
     relevance: "Exploratory",
-    confidence: "Medium confidence",
     sourceStatus: "Primary plus coverage",
     evidenceStatus: "Emerging",
     section: "Company Updates",
@@ -1039,7 +1039,6 @@ export const defaultSettings: BriefingSettings = {
   defaultSourceMix: "Balanced",
   defaultAnalysisMode: "Scientist",
   defaultTimeWindow: "3 days",
-  showLowConfidenceItems: false,
   showSpeculativeItems: false,
   showDuplicateCoverage: true,
   includeWhyItMatters: true,
@@ -1105,7 +1104,7 @@ export const mockArchive: ArchivedBriefing[] = [
     date: "2026-05-26",
     generatedAt: "06:45 AM ET",
     summary:
-      "Alzheimer’s biomarker limits and low-confidence incretin safety chatter were flagged with caveats.",
+      "Alzheimer’s biomarker limits and speculative incretin safety chatter were flagged with caveats.",
     topSignalIds: ["sig-alz-publication", "sig-safety"],
     savedSignalIds: [],
     diseases: ["Alzheimer’s disease", "Obesity"],

@@ -20,11 +20,6 @@ const importanceWeights: Record<string, number> = {
   Medium: 9,
   Low: 3,
 };
-const confidenceWeights: Record<string, number> = {
-  "High confidence": 10,
-  "Medium confidence": 6,
-  "Low confidence": 1,
-};
 const sourceWeights: Record<string, number> = {
   "Primary confirmed": 14,
   "Primary plus coverage": 10,
@@ -92,11 +87,6 @@ export function explainSignalRanking(
     ["Regulatory", "Company Update"].includes(signal.eventType)
       ? 3
       : 0;
-  const beginnerBoost =
-    controls.analysisMode === "Beginner" &&
-    signal.confidence === "High confidence"
-      ? 2
-      : 0;
   const lessPenalty = lessLikeThisIds.includes(signal.id) ? -18 : 0;
   const broadPenalty =
     controls.sourceMix === "Broad" &&
@@ -112,9 +102,6 @@ export function explainSignalRanking(
   );
   reasons.push(
     `${signal.sourceStatus} source status adds ${sourceWeights[signal.sourceStatus] ?? 0} points.`,
-  );
-  reasons.push(
-    `${signal.confidence} adds ${confidenceWeights[signal.confidence] ?? 0} points.`,
   );
 
   if (watchlistBoost > 0) {
@@ -132,8 +119,6 @@ export function explainSignalRanking(
     reasons.push(
       "Consultant mode boosts market-shaping regulatory and company updates.",
     );
-  if (beginnerBoost)
-    reasons.push("Beginner mode slightly boosts high-confidence signals.");
   if (lessPenalty)
     reasons.push("“Less like this” applies a local downranking penalty.");
   if (broadPenalty)
@@ -144,13 +129,11 @@ export function explainSignalRanking(
   const totalScore =
     (eventWeights[signal.eventType] ?? 0) +
     (importanceWeights[signal.importance] ?? 0) +
-    (confidenceWeights[signal.confidence] ?? 0) +
     (sourceWeights[signal.sourceStatus] ?? 0) +
     watchlistBoost +
     scientistBoost +
     investorBoost +
     consultantBoost +
-    beginnerBoost +
     lessPenalty +
     broadPenalty;
 

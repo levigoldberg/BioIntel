@@ -11,6 +11,7 @@ import type {
   SourceTrailItem,
 } from "@/src/types/biointel";
 import { BriefingHeader } from "./BriefingHeader";
+import { BriefingOverview } from "./BriefingOverview";
 import { QuickControls } from "./QuickControls";
 import { SignalCard } from "./SignalCard";
 import { SignalDetailPanel } from "./SignalDetailPanel";
@@ -58,11 +59,6 @@ export function TodayPage() {
 
   const eligibleSignals = useMemo(() => {
     return signals.filter((signal) => {
-      if (
-        !settings.showLowConfidenceItems &&
-        signal.confidence === "Low confidence"
-      )
-        return false;
       if (
         !settings.showSpeculativeItems &&
         signal.evidenceStatus === "Speculative"
@@ -126,6 +122,11 @@ export function TodayPage() {
         controls={controls}
       />
       <QuickControls controls={controls} setControls={setControls} />
+      <BriefingOverview
+        signals={visibleSignals}
+        controls={controls}
+        trackedTopics={trackedTopics}
+      />
       <div className="flex gap-2 overflow-x-auto rounded-3xl border border-slate-200 bg-white p-2">
         {sections.map((item) => (
           <button
@@ -157,8 +158,7 @@ export function TodayPage() {
           {visibleSignals.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-600">
               No signals match this view. Try Broad source mix, a longer time
-              window, or enabling lower-confidence/speculative items in
-              Settings.
+              window, or enabling speculative items in Settings.
             </div>
           ) : (
             visibleSignals.map((signal) => {

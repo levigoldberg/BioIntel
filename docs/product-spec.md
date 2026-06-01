@@ -27,7 +27,7 @@ The product should make source quality, evidence strength, and user relevance vi
 - Deliver a convincing clickable prototype using Next.js, TypeScript, Tailwind CSS, and the App Router.
 - Use local mock data only.
 - Make the Today page feel like a serious daily intelligence briefing.
-- Demonstrate source-backed signal cards with confidence and evidence context.
+- Demonstrate source-backed signal cards with evidence status and source context.
 - Let users locally adjust briefing controls, filters, settings, watchlist items, source toggles, save state, and hidden items.
 - Provide enough product structure to support future RSS, ClinicalTrials.gov, PubMed, SEC, FDA, and AI summarization work.
 
@@ -56,7 +56,7 @@ The product should make source quality, evidence strength, and user relevance vi
 
 3. **Healthcare investor / analyst**
    - Tracks catalysts, data readouts, regulatory events, financing, M&A, and market implications.
-   - Needs importance ranking, confidence, and watch-next suggestions.
+   - Needs importance ranking, evidence status, and watch-next suggestions.
 
 4. **Consultant / strategy professional**
    - Tracks landscapes across disease areas, mechanisms, companies, and modality trends.
@@ -83,7 +83,7 @@ This audit tightens the specification before implementation. The following decis
 - **Today is the product center.** Build Today first and make it the most polished route. Watchlist, Sources, Settings, and Archive exist to explain or support the Today briefing.
 - **Mock data means mock data.** v1 must not include real ingestion, scraping, external APIs, authentication, a database, background jobs, or AI summarization.
 - **Signals remain the core unit.** Do not build generic article lists. Each item in the feed is a structured signal with a source trail.
-- **Every signal needs trust context.** Cards and detail views must expose confidence, source status, source transparency, and why the signal matters.
+- **Every signal needs trust context.** Cards and detail views must expose evidence status, source status, source transparency, and why the signal matters.
 - **Settings are defaults, not an analyst workbench.** v1 should use a short list of practical knobs instead of event-priority sliders and dozens of evidence toggles.
 - **Archive is lightweight.** Archive should show mock past briefings and saved items only; it is not a full historical research database in v1.
 - **Ranking must be explainable.** Use simple local scoring that can produce clear “why you are seeing this” copy.
@@ -153,8 +153,8 @@ Each signal should contain:
 - `headline`.
 - `eventType`.
 - `importance`.
-- `confidence`.
 - `sourceStatus`.
+- `evidenceStatus`.
 - `summary`.
 - `whyItMatters`.
 - `matchedTopics`.
@@ -182,6 +182,9 @@ The Today page is the homepage. It should contain:
 - Count of signals found.
 - Current source mode.
 - Current analysis mode.
+- High-level briefing overview based on the current knobs.
+- General news layer summarizing the filtered watchlist-relevant feed.
+- Watchlist-specific sections capped to avoid flooding the user with unnecessary news.
 - Quick controls:
   - Briefing length: 5, 10, 20.
   - Source mix: Primary only, Balanced, Broad.
@@ -253,10 +256,9 @@ The Settings page should expose only practical defaults that a user can understa
 2. Default source mix: Primary only, Balanced, or Broad.
 3. Default analysis mode: Scientist, Consultant, Investor, or Beginner.
 4. Default time window: Last 24h, 3 days, or 7 days.
-5. Include low-confidence signals: on/off.
-6. Include speculative/noisy signals: on/off.
-7. Require primary confirmation for major claims: on/off.
-8. Default detail depth: Quick skim, Standard, or Detailed analyst.
+5. Include speculative/noisy signals: on/off.
+6. Require primary confirmation for major claims: on/off.
+7. Default detail depth: Quick skim, Standard, or Detailed analyst.
 
 Do not build event-priority sliders, per-evidence-type toggle grids, notification preferences, account settings, team settings, or API/source credentials in v1.
 
@@ -277,7 +279,7 @@ Each signal card includes:
 - Headline.
 - Event type.
 - Relevance label.
-- Confidence label.
+- Evidence status label.
 - Source status label.
 - Tags for disease, company, mechanism, modality, or theme.
 - One-sentence summary.
@@ -320,7 +322,7 @@ The Today feed should rank visible signals using a transparent mock score. The s
 
 - Event importance.
 - Watchlist match strength.
-- Evidence confidence.
+- Evidence status.
 - Source quality.
 - Recency.
 - Source mix setting.
@@ -386,7 +388,8 @@ Recommended extra components:
 - Settings controls update local state and are limited to the practical v1 knobs listed above.
 - Watchlist toggles update local state.
 - Source toggles update local state.
-- “Open sources” should reveal or focus the source trail; it should not open real URLs in v1 unless mock URLs are added intentionally.
+- “Open sources” should reveal or focus the source trail.
+- “Inspect source” should open the static mock source URL in a new tab and show the in-app source drilldown.
 
 ## 18. Definition of done for v1 prototype
 
@@ -408,6 +411,6 @@ These questions should not block the mock-data MVP:
 
 - Should BioIntel group multiple real sources into one canonical signal automatically or expose source-level articles separately?
 - Which persona should become the default analysis mode after user testing?
-- Should confidence remain a simple label or become a numeric score after real evidence scoring exists?
+- Should evidence status stay a simple label or become a structured evidence model after real ingestion exists?
 - How should paywalled trade press be represented in source trails?
 - How should “less like this” affect future ranking once persistence exists?

@@ -37,7 +37,6 @@ Suggested v1 score is a 0-100 style score. It can exceed 100 before final clampi
 | Importance | 25 |
 | Watchlist relevance | 25 |
 | Source quality | 15 |
-| Confidence | 10 |
 | Recency | 10 |
 | Event type base nudge | 10 |
 | Analysis mode fit | 5 |
@@ -119,18 +118,6 @@ Suggested rules:
 - Subtract 8 points if the strongest source is a noisy/social source.
 - Cap source score at 15.
 
-## Confidence score
-
-```ts
-const confidenceScore = {
-  high: 10,
-  medium: 6,
-  low: 2,
-}[signal.confidence];
-```
-
-If user settings hide low-confidence items, low-confidence signals should be filtered before ranking.
-
 ## Recency score
 
 Suggested recency scoring:
@@ -204,7 +191,7 @@ Boost:
 
 Boost:
 
-- High-confidence items.
+- Signals with clear source status and evidence status.
 - Major signals with clear explanatory summaries.
 - Signals with lower jargon tags.
 
@@ -226,8 +213,8 @@ function getAnalysisModeScore(signal: Signal, mode: AnalysisMode): number {
   }
 
   if (mode === 'Beginner') {
-    if (signal.confidence === 'high' && signal.importance === 'major') return 5;
-    if (signal.confidence === 'high') return 3;
+    if (signal.importance === 'major' && signal.sourceStatus === 'Confirmed primary source') return 5;
+    if (signal.sourceStatus === 'Confirmed primary source') return 3;
   }
 
   return 0;
@@ -253,7 +240,7 @@ Source mix should affect both filtering and ranking.
 ### Broad
 
 - Include all enabled source categories.
-- Allow speculative or noisy items only with clear labels and lower confidence.
+- Allow speculative or noisy items only with clear evidence and source labels.
 - Do not allow noisy items to outrank primary-confirmed major signals unless watchlist relevance is exceptional.
 
 ## Section filtering
@@ -310,7 +297,6 @@ function rankSignals({
         getImportanceScore(signal) +
         watchlist.score +
         getSourceQualityScore(signal) +
-        getConfidenceScore(signal) +
         getRecencyScore(signal.date) +
         getEventTypeBaseNudge(signal.eventType) +
         getAnalysisModeScore(signal, controls.analysisMode) +
@@ -329,7 +315,7 @@ The detail panel's “Why you are seeing this” section can combine:
 
 - Watchlist matches.
 - Event type relevance.
-- Source confidence.
+- Source status.
 - Recency.
 - Analysis mode fit.
 

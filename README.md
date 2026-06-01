@@ -17,7 +17,7 @@ BioIntel Build 2 is now a working **frontend-only mock-data prototype** that bui
 
 ## Build 1 pages
 
-- **Today** — the polished homepage and morning briefing experience with source-backed signal cards, controls initialized from shared Settings, filters, local save/hide/downrank actions, source drill-down, ranking explanations, and responsive detail panels.
+- **Today** — the polished homepage and morning briefing experience with a watchlist-centered overview, source-backed signal cards, controls initialized from shared Settings, filters, local save/hide/downrank actions, source drill-down, static source links, ranking explanations, and responsive detail panels.
 - **Watchlist** — grouped mock watchlist topics with enable/pause, remove, and edit-looking local controls.
 - **Sources** — source registry grouped by source type with local enable/disable toggles and trust cues.
 - **Settings** — practical briefing, evidence, and tone/depth knobs backed by a lightweight client-side preferences context.

@@ -26,8 +26,6 @@ export type EventType =
 
 export type ImportanceLevel = 'major' | 'standard' | 'compact';
 
-export type ConfidenceLevel = 'high' | 'medium' | 'low';
-
 export type SourceStatus =
   | 'Confirmed primary source'
   | 'Company-reported'
@@ -77,8 +75,8 @@ export interface Signal {
   headline: string;
   eventType: EventType;
   importance: ImportanceLevel;
-  confidence: ConfidenceLevel;
   sourceStatus: SourceStatus;
+  evidenceStatus: EvidenceStatus;
   relevanceLabel: string;
   summary: string;
   whyItMatters: string;
@@ -156,7 +154,6 @@ export interface EvidenceStatus {
     | 'Company claim'
     | 'Secondary report'
     | 'Preliminary / speculative';
-  confidence: ConfidenceLevel;
   explanation: string;
   limitations: string[];
 }
@@ -385,7 +382,6 @@ export interface UserSettings {
   defaultSourceMix: SourceMix;
   defaultAnalysisMode: AnalysisMode;
   defaultTimeWindow: TimeWindow;
-  includeLowConfidenceSignals: boolean;
   includeSpeculativeSignals: boolean;
   requirePrimaryConfirmationForMajorClaims: boolean;
   defaultDetailDepth: DetailLevel;

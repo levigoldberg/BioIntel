@@ -168,13 +168,6 @@ export function SettingsPanel() {
 
       <section className="grid gap-3 rounded-3xl border border-slate-200 bg-white p-5 md:grid-cols-2">
         <Toggle
-          label="Show low-confidence items"
-          checked={settings.showLowConfidenceItems}
-          onChange={(showLowConfidenceItems) =>
-            updateSettings({ ...settings, showLowConfidenceItems })
-          }
-        />
-        <Toggle
           label="Show speculative items"
           checked={settings.showSpeculativeItems}
           onChange={(showSpeculativeItems) =>

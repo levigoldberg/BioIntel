@@ -30,7 +30,6 @@ export function Badge({
 export function toneForTrust(label: string): Tone {
   if (
     label.includes("Very high") ||
-    label.includes("High confidence") ||
     label.includes("Primary confirmed") ||
     label === "Confirmed"
   )
