@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { defaultSources } from "@/src/data/defaultData";
+import { storageKeys, usePersistentState } from "@/src/lib/persistence";
 import type { SourceDefinition, SourceType } from "@/src/types/biointel";
 import { Badge, toneForTrust } from "./Badge";
 
@@ -36,7 +36,10 @@ function connectionStatusFor(source: SourceDefinition) {
 }
 
 export function SourceManager() {
-  const [sources, setSources] = useState<SourceDefinition[]>(defaultSources);
+  const [sources, setSources] = usePersistentState<SourceDefinition[]>(
+    storageKeys.sources,
+    defaultSources,
+  );
   return (
     <div className="space-y-5">
       <header className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
@@ -46,8 +49,16 @@ export function SourceManager() {
         <h1 className="mt-2 text-3xl font-black">Sources</h1>
         <p className="mt-2 text-slate-600">
           Source quality, bias risk, and confirmation requirements shape how
-          live signals are ranked and explained.
+          live signals are ranked and explained. Source toggles are saved in
+          this browser and applied to Today ingestion.
         </p>
+        <button
+          type="button"
+          onClick={() => setSources(defaultSources)}
+          className="focus-ring mt-4 rounded-full border border-slate-950 bg-slate-950 px-4 py-2 text-sm font-bold text-white"
+        >
+          Reset sources
+        </button>
       </header>
       {groups.map((group) => (
         <section

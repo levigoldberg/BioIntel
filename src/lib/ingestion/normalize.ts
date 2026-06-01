@@ -111,7 +111,7 @@ export function normalizeItemToSignal(
       "Treat this as source metadata, not AI-written analysis.",
       item.eventType === "Clinical Trial"
         ? "Re-check after another fetch to compare against the in-memory trial snapshot."
-        : "Save or hide locally to tune this session.",
+        : "Save or hide locally to tune this browser.",
     ],
     date: item.publishedAt.slice(0, 10),
     generatedAt,

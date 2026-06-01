@@ -51,6 +51,7 @@ The browser calls only the local `/api/signals` route. External source calls sta
 - `sourceMix`
 - `timeWindow`
 - `limit`
+- `sourceIds`
 
 It returns:
 
@@ -64,9 +65,23 @@ If one source fails, the route still returns available partial results.
 
 On Vercel, the route is explicitly dynamic and has a bounded function duration. Each public-source request also has its own timeout, so slow source responses are reported in `sourceStatuses` instead of blocking the whole briefing.
 
+`sourceIds` lets the browser apply saved source toggles without making external calls client-side. Disabled sources return `skipped` statuses, and connected industry RSS feeds can be filtered individually.
+
 ## Caching
 
 The current cache is in-memory and process-local. It improves local responsiveness but is not a durable ingestion store.
+
+## Browser-Local State
+
+The current app saves user actions in `localStorage`:
+
+- Watchlist edits, removals, and pause/enable state.
+- Source enable/disable toggles.
+- Settings defaults.
+- Today briefing controls.
+- Saved, hidden, and downranked signal IDs.
+
+This makes the site usable across page navigation and reloads in one browser without adding authentication or a database. It is not cross-device persistence and does not replace future durable storage.
 
 ## Future Backend Direction
 

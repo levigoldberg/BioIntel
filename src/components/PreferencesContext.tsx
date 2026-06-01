@@ -4,10 +4,14 @@ import {
   createContext,
   useContext,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
 import { defaultSettings } from "@/src/data/defaultData";
+import {
+  clearLocalValue,
+  storageKeys,
+  usePersistentState,
+} from "@/src/lib/persistence";
 import type { BriefingSettings } from "@/src/types/biointel";
 
 interface PreferencesContextValue {
@@ -19,15 +23,21 @@ interface PreferencesContextValue {
 const PreferencesContext = createContext<PreferencesContextValue | null>(null);
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<BriefingSettings>(defaultSettings);
+  const [settings, setSettings] = usePersistentState<BriefingSettings>(
+    storageKeys.settings,
+    defaultSettings,
+  );
 
   const value = useMemo(
     () => ({
       settings,
       updateSettings: setSettings,
-      resetSettings: () => setSettings(defaultSettings),
+      resetSettings: () => {
+        clearLocalValue(storageKeys.settings);
+        setSettings(defaultSettings);
+      },
     }),
-    [settings],
+    [setSettings, settings],
   );
 
   return (

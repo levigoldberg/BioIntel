@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { defaultWatchlist } from "@/src/data/defaultData";
+import { storageKeys, usePersistentState } from "@/src/lib/persistence";
 import type { WatchlistItem, WatchlistType } from "@/src/types/biointel";
 import { Badge } from "./Badge";
 
@@ -14,7 +15,10 @@ const groups: WatchlistType[] = [
 ];
 
 export function WatchlistManager() {
-  const [items, setItems] = useState<WatchlistItem[]>(defaultWatchlist);
+  const [items, setItems] = usePersistentState<WatchlistItem[]>(
+    storageKeys.watchlist,
+    defaultWatchlist,
+  );
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
 
@@ -40,6 +44,11 @@ export function WatchlistManager() {
     );
     setEditingId(null);
   }
+  function resetWatchlist() {
+    setItems(defaultWatchlist);
+    setEditingId(null);
+    setDraftName("");
+  }
 
   return (
     <div className="space-y-5">
@@ -50,8 +59,16 @@ export function WatchlistManager() {
         <h1 className="mt-2 text-3xl font-black">Watchlist</h1>
         <p className="mt-2 text-slate-600">
           Pause, remove, or edit tracked diseases, companies, assets,
-          mechanisms, and themes for personalized matching.
+          mechanisms, and themes for personalized matching. Changes are saved
+          in this browser.
         </p>
+        <button
+          type="button"
+          onClick={resetWatchlist}
+          className="focus-ring mt-4 rounded-full border border-slate-950 bg-slate-950 px-4 py-2 text-sm font-bold text-white"
+        >
+          Reset watchlist
+        </button>
       </header>
       {groups.map((group) => (
         <section

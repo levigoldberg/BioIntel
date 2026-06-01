@@ -10,7 +10,7 @@ The Today page should:
 - Use source-backed signal cards with visible trust cues.
 - Show watchlist intersections only after the general overview.
 - Keep the feed capped and deduped to avoid unnecessary volume.
-- Preserve local interactions such as save, hide, less like this, section filters, and source inspection.
+- Preserve local interactions such as save, hide, less like this, source toggles, watchlist edits, settings, section filters, and source inspection.
 
 ## Connected Sources
 
@@ -23,7 +23,7 @@ The Today page should:
 
 - Authentication.
 - Supabase.
-- Database storage.
+- Database storage beyond browser-local preferences and actions.
 - Scheduled ingestion.
 - AI summarization.
 - Scraping.
@@ -48,10 +48,10 @@ Trade press can provide context, but major clinical, regulatory, or financial cl
 ## Pages
 
 - **Today**: broad briefing, watchlist intersections, filters, cards, details, and source drill-down.
-- **Watchlist**: local topic controls used for matching and personalization.
-- **Sources**: connected/planned/disabled source registry with trust cues.
-- **Settings**: briefing and evidence controls.
-- **Archive**: inactive until persistent storage is added.
+- **Watchlist**: browser-local topic controls used for matching and personalization.
+- **Sources**: connected/planned/disabled source registry with saved browser-local toggles and trust cues.
+- **Settings**: saved browser-local briefing and evidence controls.
+- **Archive**: explains browser-local saved state until durable briefing archives are added.
 
 ## Hosting Direction
 

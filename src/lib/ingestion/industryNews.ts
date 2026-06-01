@@ -5,18 +5,21 @@ import type { RawSourceItem, SourceFetchResult } from "./types";
 const newsFeeds = [
   {
     id: "fierce-biotech",
+    sourceId: "src-fierce",
     name: "Fierce Biotech",
     url: "https://www.fiercebiotech.com/rss/xml",
     trustLevel: "Medium" as const,
   },
   {
     id: "fierce-pharma",
+    sourceId: "src-fiercepharma",
     name: "Fierce Pharma",
     url: "https://www.fiercepharma.com/rss/xml",
     trustLevel: "Medium" as const,
   },
   {
     id: "biopharma-dive",
+    sourceId: "src-biopharmadive",
     name: "BioPharma Dive",
     url: "https://www.biopharmadive.com/feeds/news/",
     trustLevel: "Medium" as const,
@@ -93,14 +96,23 @@ function parseDate(value: string) {
 export async function fetchIndustryNewsItems(
   searchTerms: string[],
   limit: number,
+  sourceIds = newsFeeds.map((feed) => feed.sourceId),
 ): Promise<SourceFetchResult> {
-  const key = cacheKey({ source: "industry-news", searchTerms, limit });
+  const enabledFeeds = newsFeeds.filter((feed) =>
+    sourceIds.includes(feed.sourceId),
+  );
+  const key = cacheKey({
+    source: "industry-news",
+    searchTerms,
+    limit,
+    sourceIds,
+  });
   const cached = getCachedValue<SourceFetchResult>(key);
   if (cached) return cached;
 
   try {
     const feedResults = await Promise.all(
-      newsFeeds.map(async (feed) => {
+      enabledFeeds.map(async (feed) => {
         const response = await fetchWithTimeout(feed.url, { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`${feed.name} returned ${response.status}`);

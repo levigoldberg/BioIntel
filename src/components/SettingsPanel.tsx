@@ -96,8 +96,8 @@ export function SettingsPanel() {
         </p>
         <h1 className="mt-2 text-3xl font-black">Settings</h1>
         <p className="mt-2 text-slate-600">
-          These knobs update a lightweight client-side preferences context.
-          Today initializes from these defaults during this app session.
+          These knobs update saved browser preferences. Today uses them as the
+          default briefing setup unless you change the Today controls.
         </p>
         <button
           type="button"

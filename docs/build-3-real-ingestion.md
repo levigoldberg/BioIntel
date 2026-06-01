@@ -47,7 +47,7 @@ Each source is fetched independently. If one source fails, `/api/signals` return
 - No database.
 - No scheduled ingestion.
 - No authentication.
-- No persistent saved signals.
+- No durable account-level saved signals.
 - No AI summarization.
 - No scraping.
 - No SEC EDGAR connector yet.

@@ -7,16 +7,17 @@ export function ArchiveList() {
         </p>
         <h1 className="mt-2 text-3xl font-black">Archive</h1>
         <p className="mt-2 text-slate-600">
-          Archive storage is not active yet. Live source results are fetched on
-          demand and are not persisted between sessions.
+          Full briefing archives are not active yet. Your local preferences,
+          watchlist, source toggles, saved signals, hidden signals, and
+          downranking choices are saved in this browser.
         </p>
       </header>
       <section className="rounded-3xl border border-slate-200 bg-white p-5">
         <h2 className="text-xl font-black">No stored briefings yet</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">
-          The current site has no database, authentication, or persistent saved
-          signals. Adding persistence should be a separate backend build so the
-          ingestion layer remains clear and testable.
+          The current site has no database or authentication, so saved state is
+          local to this browser. Live source results are still fetched on demand
+          through the server-side ingestion route.
         </p>
       </section>
     </div>

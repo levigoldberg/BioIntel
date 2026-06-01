@@ -1,17 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  defaultSources,
   defaultWatchlist,
   generalBiotechTopics,
 } from "@/src/data/defaultData";
+import { storageKeys, usePersistentState } from "@/src/lib/persistence";
 import { explainSignalRanking, getVisibleSignals } from "@/src/lib/ranking";
 import type {
   BriefingControls,
   BriefingSettings,
   SectionFilter,
   Signal,
+  SourceDefinition,
   SourceTrailItem,
+  WatchlistItem,
 } from "@/src/types/biointel";
 import { BriefingHeader } from "./BriefingHeader";
 import { BriefingOverview } from "./BriefingOverview";
@@ -53,26 +57,69 @@ function controlsFromSettings(settings: BriefingSettings): BriefingControls {
   };
 }
 
+function connectedSourceIds(sources: SourceDefinition[]) {
+  const connectedIds = [
+    "src-fda",
+    "src-ctgov",
+    "src-pubmed",
+    "src-fierce",
+    "src-fiercepharma",
+    "src-biopharmadive",
+  ];
+
+  return sources
+    .filter((source) => source.enabled)
+    .filter((source) => connectedIds.includes(source.id))
+    .map((source) => source.id);
+}
+
 export function TodayPage() {
   const { settings } = usePreferences();
   const [signals, setSignals] = useState<Signal[]>([]);
   const [loadingSignals, setLoadingSignals] = useState(false);
   const [sourceWarnings, setSourceWarnings] = useState<string[]>([]);
   const [sourceStatuses, setSourceStatuses] = useState<ApiSourceStatus[]>([]);
-  const [controls, setControls] = useState<BriefingControls>(() =>
+  const [controls, setControls] = usePersistentState<BriefingControls>(
+    storageKeys.briefingControls,
     controlsFromSettings(settings),
   );
   const [section, setSection] = useState<SectionFilter>("Top Signals");
   const [selectedId, setSelectedId] = useState("");
-  const [hiddenIds, setHiddenIds] = useState<string[]>([]);
-  const [lessLikeThisIds, setLessLikeThisIds] = useState<string[]>([]);
-  const [trackedTopics, setTrackedTopics] = useState<string[]>(
-    defaultWatchlist.map((item) => item.name),
+  const [hiddenIds, setHiddenIds] = usePersistentState<string[]>(
+    storageKeys.hiddenSignalIds,
+    [],
+  );
+  const [lessLikeThisIds, setLessLikeThisIds] = usePersistentState<string[]>(
+    storageKeys.lessLikeThisSignalIds,
+    [],
+  );
+  const [savedSignalIds, setSavedSignalIds] = usePersistentState<string[]>(
+    storageKeys.savedSignalIds,
+    [],
+  );
+  const [watchlist, setWatchlist] = usePersistentState<WatchlistItem[]>(
+    storageKeys.watchlist,
+    defaultWatchlist,
+  );
+  const [sources] = usePersistentState<SourceDefinition[]>(
+    storageKeys.sources,
+    defaultSources,
   );
   const [selectedSource, setSelectedSource] = useState<SourceTrailItem | null>(
     null,
   );
   const [notice, setNotice] = useState("Loading real source signals.");
+  const savedSignalIdsRef = useRef(savedSignalIds);
+
+  useEffect(() => {
+    savedSignalIdsRef.current = savedSignalIds;
+  }, [savedSignalIds]);
+
+  const trackedTopics = useMemo(
+    () => watchlist.filter((item) => item.enabled).map((item) => item.name),
+    [watchlist],
+  );
+  const enabledSourceIds = useMemo(() => connectedSourceIds(sources), [sources]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -81,6 +128,7 @@ export function TodayPage() {
       sourceMix: controls.sourceMix,
       timeWindow: controls.timeWindow,
       limit: String(controls.briefingLength),
+      sourceIds: enabledSourceIds.join(","),
     });
 
     setLoadingSignals(true);
@@ -92,7 +140,13 @@ export function TodayPage() {
         return (await response.json()) as SignalsApiResponse;
       })
       .then((data) => {
-        setSignals(data.signals);
+        const savedIds = new Set(savedSignalIdsRef.current);
+        setSignals(
+          data.signals.map((signal) => ({
+            ...signal,
+            saved: savedIds.has(signal.id),
+          })),
+        );
         setSourceStatuses(data.sourceStatuses);
         setSourceWarnings(data.warnings);
         setSelectedId(data.signals[0]?.id ?? "");
@@ -122,6 +176,7 @@ export function TodayPage() {
     controls.briefingLength,
     controls.sourceMix,
     controls.timeWindow,
+    enabledSourceIds,
     trackedTopics,
   ]);
 
@@ -158,21 +213,44 @@ export function TodayPage() {
     null;
 
   function toggleSave(id: string) {
+    setSavedSignalIds((current) =>
+      current.includes(id)
+        ? current.filter((signalId) => signalId !== id)
+        : [...current, id],
+    );
     setSignals((current) =>
       current.map((signal) =>
         signal.id === id ? { ...signal, saved: !signal.saved } : signal,
       ),
     );
-    setNotice("Saved state updated locally for this session.");
+    setNotice("Saved state updated in this browser.");
   }
 
   function trackTopic(signal: Signal) {
     const topic = signal.matchedWatchlistTopics[0] ?? signal.tags[0]?.label;
     if (!topic) return;
-    setTrackedTopics((current) =>
-      current.includes(topic) ? current : [...current, topic],
-    );
-    setNotice(`${topic} is now tracked locally.`);
+    setWatchlist((current) => {
+      if (current.some((item) => item.name === topic)) {
+        return current.map((item) =>
+          item.name === topic ? { ...item, enabled: true } : item,
+        );
+      }
+
+      return [
+        ...current,
+        {
+          id: `w-local-${Date.now()}`,
+          name: topic,
+          type: "Keyword / theme",
+          enabled: true,
+          priority: "Medium",
+          recentSignalCount: 0,
+          synonyms: [],
+          rationale: "Added from a Today signal.",
+        },
+      ];
+    });
+    setNotice(`${topic} is now tracked in the saved watchlist.`);
   }
 
   function openSources(signal: Signal) {
@@ -292,14 +370,14 @@ export function TodayPage() {
                     onToggleSave={() => toggleSave(signal.id)}
                     onHide={() => {
                       setHiddenIds((ids) => [...ids, signal.id]);
-                      setNotice("Signal hidden for this session.");
+                      setNotice("Signal hidden in this browser.");
                     }}
                     onLessLikeThis={() => {
                       setLessLikeThisIds((ids) =>
                         ids.includes(signal.id) ? ids : [...ids, signal.id],
                       );
                       setNotice(
-                        "This signal was lightly downranked for the current session.",
+                        "This signal was lightly downranked in this browser.",
                       );
                     }}
                     onTrackTopic={() => trackTopic(signal)}
@@ -321,7 +399,7 @@ export function TodayPage() {
             })
           )}
           <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
-            Tracked locally this session: {trackedTopics.slice(0, 8).join(", ")}
+            Tracked in this browser: {trackedTopics.slice(0, 8).join(", ")}
             {trackedTopics.length > 8 ? "…" : ""}
           </div>
         </div>

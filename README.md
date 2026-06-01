@@ -30,10 +30,10 @@ The `/api/signals` route runs dynamically on Vercel, keeps external source fetch
 ## App Pages
 
 - **Today** — live general biotech/pharma briefing, source-backed signal cards, ranking explanations, source drill-down, and local save/hide/downrank interactions.
-- **Watchlist** — local topic list used to personalize matching after the general overview.
-- **Sources** — source registry with connection status, trust cues, bias risk, and confirmation requirements.
-- **Settings** — briefing length, source mix, time window, analysis mode, evidence, and tone controls.
-- **Archive** — placeholder until persistent storage is added.
+- **Watchlist** — saved browser-local topic list used to personalize matching after the general overview.
+- **Sources** — saved browser-local source registry toggles with connection status, trust cues, bias risk, and confirmation requirements.
+- **Settings** — saved browser-local briefing length, source mix, time window, analysis mode, evidence, and tone controls.
+- **Archive** — explains current browser-local saved state and future durable archive scope.
 
 ## Run Locally
 
@@ -56,6 +56,7 @@ Supported query params:
 - `sourceMix`: `Primary only`, `Balanced`, or `Broad`.
 - `timeWindow`: `Last 24h`, `3 days`, or `7 days`.
 - `limit`: capped server-side between 1 and 30.
+- `sourceIds`: optional comma-separated connected source IDs (`src-fda`, `src-ctgov`, `src-pubmed`, `src-fierce`, `src-fiercepharma`, `src-biopharmadive`). Disabled sources are returned as `skipped` in `sourceStatuses`.
 
 ## Validate
 
@@ -69,7 +70,7 @@ npm run build
 - No database or persistent raw item store.
 - No scheduled ingestion or background jobs.
 - No authentication.
-- No persistent saved signals.
+- No cross-device or account-level saved signals; preferences and user actions are saved in browser `localStorage`.
 - No AI summarization.
 - No scraping.
 - No paid/paywalled source integrations.

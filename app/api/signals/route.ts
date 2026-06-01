@@ -13,6 +13,20 @@ import type { IngestionQuery, SourceFetchResult } from "@/src/lib/ingestion/type
 export const dynamic = "force-dynamic";
 export const maxDuration = 20;
 
+const connectedSourceIds = [
+  "src-fda",
+  "src-ctgov",
+  "src-pubmed",
+  "src-fierce",
+  "src-fiercepharma",
+  "src-biopharmadive",
+];
+const industrySourceIds = [
+  "src-fierce",
+  "src-fiercepharma",
+  "src-biopharmadive",
+];
+
 function parseLimit(value: string | null) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return 10;
@@ -29,6 +43,17 @@ function parseTopics(value: string | null) {
     .map((topic) => topic.trim())
     .filter(Boolean)
     .slice(0, 20);
+}
+
+function parseSourceIds(value: string | null) {
+  if (value === null) return new Set(connectedSourceIds);
+
+  return new Set(
+    value
+      .split(",")
+      .map((sourceId) => sourceId.trim())
+      .filter((sourceId) => connectedSourceIds.includes(sourceId)),
+  );
 }
 
 function sourceLimit(totalLimit: number) {
@@ -51,6 +76,7 @@ function isInsideWindow(date: string, timeWindow: string) {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const topics = parseTopics(searchParams.get("topics"));
+  const enabledSourceIds = parseSourceIds(searchParams.get("sourceIds"));
   const topicMatches = buildTopicMatches(topics);
   const searchTerms = searchTermsFromMatches(topicMatches);
   const query: IngestionQuery = {
@@ -76,14 +102,65 @@ export async function GET(request: Request) {
   }
 
   const perSourceLimit = sourceLimit(query.limit);
-  const sourceFetches: Array<Promise<SourceFetchResult>> = [
-    fetchFdaItems(query.searchTerms, perSourceLimit),
-    fetchPubMedItems(query.searchTerms, perSourceLimit),
-    fetchClinicalTrialItems(query.searchTerms, perSourceLimit),
-  ];
+  const sourceFetches: Array<Promise<SourceFetchResult>> = [];
 
-  if (query.sourceMix !== "Primary only") {
-    sourceFetches.push(fetchIndustryNewsItems(query.searchTerms, perSourceLimit));
+  if (enabledSourceIds.has("src-fda")) {
+    sourceFetches.push(fetchFdaItems(query.searchTerms, perSourceLimit));
+  } else {
+    sourceFetches.push(
+      Promise.resolve({
+        items: [],
+        status: { source: "FDA", status: "skipped", count: 0 },
+      }),
+    );
+  }
+
+  if (enabledSourceIds.has("src-pubmed")) {
+    sourceFetches.push(fetchPubMedItems(query.searchTerms, perSourceLimit));
+  } else {
+    sourceFetches.push(
+      Promise.resolve({
+        items: [],
+        status: { source: "PubMed", status: "skipped", count: 0 },
+      }),
+    );
+  }
+
+  if (enabledSourceIds.has("src-ctgov")) {
+    sourceFetches.push(
+      fetchClinicalTrialItems(query.searchTerms, perSourceLimit),
+    );
+  } else {
+    sourceFetches.push(
+      Promise.resolve({
+        items: [],
+        status: {
+          source: "ClinicalTrials.gov",
+          status: "skipped",
+          count: 0,
+        },
+      }),
+    );
+  }
+
+  const enabledIndustrySourceIds = industrySourceIds.filter((sourceId) =>
+    enabledSourceIds.has(sourceId),
+  );
+  if (query.sourceMix !== "Primary only" && enabledIndustrySourceIds.length > 0) {
+    sourceFetches.push(
+      fetchIndustryNewsItems(
+        query.searchTerms,
+        perSourceLimit,
+        enabledIndustrySourceIds,
+      ),
+    );
+  } else {
+    sourceFetches.push(
+      Promise.resolve({
+        items: [],
+        status: { source: "Industry News", status: "skipped", count: 0 },
+      }),
+    );
   }
 
   const results: SourceFetchResult[] = await Promise.all(sourceFetches);
