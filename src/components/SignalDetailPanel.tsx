@@ -50,7 +50,7 @@ export function SignalDetailPanel({
       <div className="mt-5 space-y-4 text-sm leading-6 text-slate-700">
         <section>
           <h3 className="font-bold text-slate-950">Why ranked here</h3>
-          <p className="mt-1">Mock ranking score: {explanation.totalScore}</p>
+          <p className="mt-1">Ranking score: {explanation.totalScore}</p>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             {explanation.reasons.slice(0, 6).map((reason) => (
               <li key={reason}>{reason}</li>

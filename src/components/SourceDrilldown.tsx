@@ -66,7 +66,7 @@ export function SourceDrilldown({
         <p className="mt-3">
           {source.requiresPrimaryConfirmation
             ? "This source is useful for context or market reaction, but BioIntel should require a primary confirmation before treating the claim as established."
-            : "This source can support the main claim directly in the mock briefing because it is primary or high-trust evidence."}
+            : "This source can support the main claim directly because it is primary or high-trust evidence."}
         </p>
       </div>
     </section>

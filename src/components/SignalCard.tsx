@@ -39,6 +39,7 @@ export function SignalCard({
         className="focus-ring block w-full rounded-2xl text-left"
       >
         <div className="flex flex-wrap gap-2">
+          <Badge tone="green">{signal.origin ?? "Real"}</Badge>
           <Badge tone="blue">{signal.eventType}</Badge>
           <Badge
             tone={
@@ -80,9 +81,9 @@ export function SignalCard({
         </div>
         <div className="mt-3 text-sm text-slate-600">
           <span className="font-semibold text-slate-900">
-            Matched watchlist:{" "}
+            Matched topics:{" "}
           </span>
-          {signal.matchedWatchlistTopics.join(", ")}
+          {signal.matchedWatchlistTopics.join(", ") || "General biotech/pharma"}
         </div>
         <div className="mt-2 text-sm text-slate-500">
           <span className="font-semibold">Source trail preview:</span>{" "}

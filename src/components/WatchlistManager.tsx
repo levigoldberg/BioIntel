@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { mockWatchlist } from "@/src/data/mockData";
+import { defaultWatchlist } from "@/src/data/defaultData";
 import type { WatchlistItem, WatchlistType } from "@/src/types/biointel";
 import { Badge } from "./Badge";
 
@@ -14,7 +14,7 @@ const groups: WatchlistType[] = [
 ];
 
 export function WatchlistManager() {
-  const [items, setItems] = useState<WatchlistItem[]>(mockWatchlist);
+  const [items, setItems] = useState<WatchlistItem[]>(defaultWatchlist);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftName, setDraftName] = useState("");
 
@@ -49,8 +49,8 @@ export function WatchlistManager() {
         </p>
         <h1 className="mt-2 text-3xl font-black">Watchlist</h1>
         <p className="mt-2 text-slate-600">
-          Pause, remove, or mock-edit tracked diseases, companies, assets,
-          mechanisms, and themes.
+          Pause, remove, or edit tracked diseases, companies, assets,
+          mechanisms, and themes for personalized matching.
         </p>
       </header>
       {groups.map((group) => (

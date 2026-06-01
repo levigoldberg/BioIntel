@@ -1,7 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { mockSignals, mockWatchlist } from "@/src/data/mockData";
+import { useEffect, useMemo, useState } from "react";
+import {
+  defaultWatchlist,
+  generalBiotechTopics,
+} from "@/src/data/defaultData";
 import { explainSignalRanking, getVisibleSignals } from "@/src/lib/ranking";
 import type {
   BriefingControls,
@@ -27,6 +30,19 @@ const sections: SectionFilter[] = [
   "Deals / Financing",
   "Saved",
 ];
+interface ApiSourceStatus {
+  source: string;
+  status: "ok" | "error" | "skipped";
+  count: number;
+  error?: string;
+}
+
+interface SignalsApiResponse {
+  signals: Signal[];
+  sourceStatuses: ApiSourceStatus[];
+  cacheStatus?: "hit" | "miss" | "skipped";
+  warnings: string[];
+}
 
 function controlsFromSettings(settings: BriefingSettings): BriefingControls {
   return {
@@ -39,23 +55,75 @@ function controlsFromSettings(settings: BriefingSettings): BriefingControls {
 
 export function TodayPage() {
   const { settings } = usePreferences();
-  const [signals, setSignals] = useState<Signal[]>(mockSignals);
+  const [signals, setSignals] = useState<Signal[]>([]);
+  const [loadingSignals, setLoadingSignals] = useState(false);
+  const [sourceWarnings, setSourceWarnings] = useState<string[]>([]);
+  const [sourceStatuses, setSourceStatuses] = useState<ApiSourceStatus[]>([]);
   const [controls, setControls] = useState<BriefingControls>(() =>
     controlsFromSettings(settings),
   );
   const [section, setSection] = useState<SectionFilter>("Top Signals");
-  const [selectedId, setSelectedId] = useState(mockSignals[0].id);
+  const [selectedId, setSelectedId] = useState("");
   const [hiddenIds, setHiddenIds] = useState<string[]>([]);
   const [lessLikeThisIds, setLessLikeThisIds] = useState<string[]>([]);
   const [trackedTopics, setTrackedTopics] = useState<string[]>(
-    mockWatchlist.map((item) => item.name),
+    defaultWatchlist.map((item) => item.name),
   );
   const [selectedSource, setSelectedSource] = useState<SourceTrailItem | null>(
     null,
   );
-  const [notice, setNotice] = useState(
-    "Today initialized from shared Settings. Changes on this page are local to the briefing session.",
-  );
+  const [notice, setNotice] = useState("Loading real source signals.");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const params = new URLSearchParams({
+      topics: [...generalBiotechTopics, ...trackedTopics].join(","),
+      sourceMix: controls.sourceMix,
+      timeWindow: controls.timeWindow,
+      limit: String(controls.briefingLength),
+    });
+
+    setLoadingSignals(true);
+    fetch(`/api/signals?${params}`, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`/api/signals returned ${response.status}`);
+        }
+        return (await response.json()) as SignalsApiResponse;
+      })
+      .then((data) => {
+        setSignals(data.signals);
+        setSourceStatuses(data.sourceStatuses);
+        setSourceWarnings(data.warnings);
+        setSelectedId(data.signals[0]?.id ?? "");
+        setNotice(
+          data.cacheStatus === "hit"
+            ? "Real sources loaded from the server cache."
+            : "Real sources loaded from the server-side ingestion route.",
+        );
+      })
+      .catch((error) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setSignals([]);
+        setSourceWarnings([
+          error instanceof Error
+            ? `Real sources unavailable: ${error.message}`
+            : "Real sources unavailable.",
+        ]);
+        setSourceStatuses([]);
+        setNotice("Real source fetch failed. No fallback dataset is applied.");
+      })
+      .finally(() => {
+        setLoadingSignals(false);
+      });
+
+    return () => controller.abort();
+  }, [
+    controls.briefingLength,
+    controls.sourceMix,
+    controls.timeWindow,
+    trackedTopics,
+  ]);
 
   const eligibleSignals = useMemo(() => {
     return signals.filter((signal) => {
@@ -122,6 +190,51 @@ export function TodayPage() {
         controls={controls}
       />
       <QuickControls controls={controls} setControls={setControls} />
+      <section className="rounded-3xl border border-slate-200 bg-white p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+              Real source ingestion
+            </p>
+            <p className="mt-1 text-sm text-slate-600">
+              FDA, PubMed, ClinicalTrials.gov, and non-paywalled industry RSS
+              are fetched through the server-side API route.
+            </p>
+          </div>
+        </div>
+        {(loadingSignals ||
+          sourceWarnings.length > 0 ||
+          sourceStatuses.length > 0) && (
+          <div className="mt-3 space-y-2 text-sm">
+            {loadingSignals && (
+              <p className="font-semibold text-slate-600">
+                Loading real source signals...
+              </p>
+            )}
+            {sourceWarnings.map((warning) => (
+              <p key={warning} className="font-semibold text-amber-700">
+                {warning}
+              </p>
+            ))}
+            {sourceStatuses.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {sourceStatuses.map((status) => (
+                  <span
+                    key={status.source}
+                    className={`rounded-full px-3 py-1 text-xs font-bold ${
+                      status.status === "error"
+                        ? "bg-rose-50 text-rose-700"
+                        : "bg-slate-100 text-slate-700"
+                    }`}
+                  >
+                    {status.source}: {status.status} ({status.count})
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </section>
       <BriefingOverview
         signals={visibleSignals}
         controls={controls}
@@ -157,8 +270,8 @@ export function TodayPage() {
         <div className="space-y-4">
           {visibleSignals.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-8 text-center text-slate-600">
-              No signals match this view. Try Broad source mix, a longer time
-              window, or enabling speculative items in Settings.
+              No live signals match this view. Try Broad source mix, a longer
+              time window, or fewer filters.
             </div>
           ) : (
             visibleSignals.map((signal) => {

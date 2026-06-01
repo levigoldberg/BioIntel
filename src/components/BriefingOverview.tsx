@@ -20,6 +20,17 @@ function watchlistLimit(briefingLength: BriefingControls["briefingLength"]) {
   return 8;
 }
 
+function generalThemeLabels(signals: Signal[]) {
+  return topItems(
+    signals.flatMap((signal) => [
+      signal.eventType,
+      signal.evidenceStatus,
+      ...signal.tags.map((tag) => tag.label),
+    ]),
+    5,
+  );
+}
+
 export function BriefingOverview({
   signals,
   controls,
@@ -33,10 +44,7 @@ export function BriefingOverview({
     signals.map((signal) => signal.eventType),
     3,
   );
-  const topWatchlistTopics = topItems(
-    signals.flatMap((signal) => signal.matchedWatchlistTopics),
-    4,
-  );
+  const topGeneralThemes = generalThemeLabels(signals);
   const watchlistGroups = trackedTopics
     .map((topic) => ({
       topic,
@@ -63,13 +71,14 @@ export function BriefingOverview({
             Briefing overview
           </p>
           <h2 className="mt-2 text-2xl font-black text-slate-950">
-            Today is centered on your watchlist
+            General biotech/pharma overview
           </h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
             Showing {signals.length} source-backed signals for{" "}
             {controls.timeWindow.toLowerCase()} using {controls.sourceMix}{" "}
-            sources and {controls.analysisMode} analysis. The feed is capped by
-            your briefing length so broad coverage does not flood the page.
+            sources and {controls.analysisMode} analysis. The first pass is
+            broad industry coverage; watchlist intersections are shown after the
+            general news layer.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -83,52 +92,66 @@ export function BriefingOverview({
 
       <div className="grid gap-3 lg:grid-cols-[1fr_1.5fr]">
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <h3 className="font-bold text-slate-950">General news layer</h3>
+          <h3 className="font-bold text-slate-950">Important developments</h3>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Main themes: {topWatchlistTopics.join(", ")}. Top ranked signal:{" "}
+            Main themes: {topGeneralThemes.join(", ")}. Top ranked signal:{" "}
             {signals[0].headline}
           </p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <h3 className="font-bold text-slate-950">Feed discipline</h3>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Watchlist sections show up to two signals each, and only the
-            strongest {watchlistGroups.length} matching topics are summarized
-            before the detailed feed.
+            The feed is capped at {controls.briefingLength} items and deduped
+            across FDA, PubMed, ClinicalTrials.gov, and industry RSS so broad
+            coverage does not flood the page.
           </p>
         </div>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
-        {watchlistGroups.map((group) => (
-          <article
-            key={group.topic}
-            className="rounded-2xl border border-slate-200 p-4"
-          >
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-black text-slate-950">{group.topic}</h3>
-              <Badge>{group.signals.length} signals</Badge>
-            </div>
-            <div className="mt-3 space-y-3">
-              {group.signals.slice(0, 2).map((signal) => (
-                <div key={signal.id}>
-                  <p className="text-sm font-semibold leading-5 text-slate-900">
-                    {signal.headline}
-                  </p>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <Badge tone={toneForTrust(signal.evidenceStatus)}>
-                      {signal.evidenceStatus}
-                    </Badge>
-                    <Badge tone={toneForTrust(signal.sourceStatus)}>
-                      {signal.sourceStatus}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </article>
-        ))}
+      <div>
+        <h3 className="mb-3 font-black text-slate-950">
+          Watchlist intersections
+        </h3>
+        {watchlistGroups.length === 0 && (
+          <div className="rounded-2xl border border-dashed border-slate-300 p-4 text-sm text-slate-600">
+            No direct watchlist intersections appear in the current live-source
+            briefing.
+          </div>
+        )}
       </div>
+
+      {watchlistGroups.length > 0 && (
+        <div className="grid gap-3 lg:grid-cols-2">
+          {watchlistGroups.map((group) => (
+            <article
+              key={group.topic}
+              className="rounded-2xl border border-slate-200 p-4"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="font-black text-slate-950">{group.topic}</h3>
+                <Badge>{group.signals.length} signals</Badge>
+              </div>
+              <div className="mt-3 space-y-3">
+                {group.signals.slice(0, 2).map((signal) => (
+                  <div key={signal.id}>
+                    <p className="text-sm font-semibold leading-5 text-slate-900">
+                      {signal.headline}
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <Badge tone={toneForTrust(signal.evidenceStatus)}>
+                        {signal.evidenceStatus}
+                      </Badge>
+                      <Badge tone={toneForTrust(signal.sourceStatus)}>
+                        {signal.sourceStatus}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

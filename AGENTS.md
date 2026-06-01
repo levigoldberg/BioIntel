@@ -4,10 +4,11 @@ These instructions apply to the entire BioIntel repository.
 
 ## Product approach
 
-- BioIntel v1 is a mock-data-first MVP for a personalized biotech intelligence dashboard.
+- BioIntel is moving from prototype to a live-source biotech intelligence dashboard.
 - Preserve the signal-centered product model: BioIntel shows source-backed biotech signals, not generic article lists.
 - Make source quality, evidence status, and trust cues visible in product work.
-- Do not build real ingestion, external API calls, authentication, or a database unless explicitly asked.
+- Keep external source fetching server-side through Next.js route handlers or server utilities.
+- Do not add authentication, Supabase, a database, scraping, paid sources, browser-side external source calls, or AI summarization unless explicitly asked.
 
 ## Code style
 
@@ -15,16 +16,16 @@ These instructions apply to the entire BioIntel repository.
 - Keep components focused.
 - Avoid unnecessary abstractions.
 - Prefer clear names over clever patterns.
-- Keep mock data in separate files from UI components.
-- Use React state for v1 interactivity.
+- Keep source configuration/default topic data separate from UI components.
+- Use React state for local UI interactivity.
 - Do not add an external state management library unless explicitly requested.
 
 ## Scope guardrails
 
-- Do not add real APIs unless asked.
 - Do not add authentication unless asked.
 - Do not add a database unless asked.
-- Preserve the mock-data-first MVP approach.
+- Do not add AI summarization unless asked.
+- Do not reintroduce fallback datasets that look like source-backed signals.
 - Never expose API keys or secrets.
 - Do not commit `.env` files or secrets.
 

@@ -1,77 +1,87 @@
 # BioIntel
 
-BioIntel is a personalized biotech intelligence dashboard that transforms biotech, pharma, clinical trial, regulatory, and scientific updates into a daily source-backed briefing. It is designed around biotech **signals**: structured, source-backed events such as clinical trial changes, FDA/regulatory updates, company press releases, new publications, clinical data readouts, deals, financing events, and competitive landscape updates.
+BioIntel is a source-backed biotech and pharma intelligence dashboard. It turns public regulatory, clinical, scientific, and non-paywalled industry updates into structured BioIntel signals instead of generic article lists.
 
-## Project status
+## Current Status
 
-BioIntel Build 2 is now a working **frontend-only mock-data prototype** that builds on the Build 1 briefing experience. The current app uses:
+The app now uses a server-side Next.js ingestion route for live public sources:
 
-- Next.js App Router.
-- TypeScript.
-- Tailwind CSS.
-- Local mock data only.
-- React state for interactions.
-- No authentication.
-- No database.
-- No external APIs, scraping, RSS ingestion, Supabase, or OpenAI API calls.
+- FDA RSS feeds.
+- PubMed through NCBI E-utilities.
+- ClinicalTrials.gov public API.
+- Non-paywalled industry RSS from Fierce Biotech, Fierce Pharma, and BioPharma Dive.
 
-## Build 1 pages
+The Today page starts with a general biotech/pharma overview before showing any watchlist intersections. The site does not use AI summarization, authentication, Supabase, a database, scraping, paid sources, or browser-side external source calls.
 
-- **Today** — the polished homepage and morning briefing experience with a watchlist-centered overview, source-backed signal cards, controls initialized from shared Settings, filters, local save/hide/downrank actions, source drill-down, static source links, ranking explanations, and responsive detail panels.
-- **Watchlist** — grouped mock watchlist topics with enable/pause, remove, and edit-looking local controls.
-- **Sources** — source registry grouped by source type with local enable/disable toggles and trust cues.
-- **Settings** — practical briefing, evidence, and tone/depth knobs backed by a lightweight client-side preferences context.
-- **Archive** — mock past briefings and saved signals with search and filtering.
+## Hosting
 
-## How to install dependencies
+GitHub Pages is not sufficient for this version of BioIntel because the app depends on a Next.js route handler at `/api/signals` for server-side fetching, caching, normalization, and error isolation.
+
+Use a host that can run Next.js server routes, such as:
+
+- Vercel.
+- Netlify with Next.js runtime support.
+- Render.
+- Railway.
+- Fly.io.
+
+GitHub Pages would only work if BioIntel became a static export and the ingestion API moved to a separate backend.
+
+## App Pages
+
+- **Today** — live general biotech/pharma briefing, source-backed signal cards, ranking explanations, source drill-down, and local save/hide/downrank interactions.
+- **Watchlist** — local topic list used to personalize matching after the general overview.
+- **Sources** — source registry with connection status, trust cues, bias risk, and confirmation requirements.
+- **Settings** — briefing length, source mix, time window, analysis mode, evidence, and tone controls.
+- **Archive** — placeholder until persistent storage is added.
+
+## Run Locally
 
 ```bash
 npm install
-```
-
-## How to run locally
-
-```bash
 npm run dev
 ```
 
 Then open the local URL printed by Next.js, usually <http://localhost:3000>.
 
-## How to validate the build
+## Test the API Route
+
+```bash
+curl "http://localhost:3000/api/signals?topics=biotech,pharma,FDA,obesity&sourceMix=Balanced&timeWindow=7%20days&limit=10"
+```
+
+Supported query params:
+
+- `topics`: comma-separated terms. If omitted, the route uses broad biotech/pharma topics.
+- `sourceMix`: `Primary only`, `Balanced`, or `Broad`.
+- `timeWindow`: `Last 24h`, `3 days`, or `7 days`.
+- `limit`: capped server-side between 1 and 30.
+
+## Validate
 
 ```bash
 npm run lint
 npm run build
 ```
 
+## Current Limitations
+
+- No database or persistent raw item store.
+- No scheduled ingestion or background jobs.
+- No authentication.
+- No persistent saved signals.
+- No AI summarization.
+- No scraping.
+- No paid/paywalled source integrations.
+- No SEC EDGAR connector yet.
+- ClinicalTrials.gov change detection is process-local and not persisted.
+- Source summaries are metadata-derived and should not be treated as full scientific, medical, or regulatory analysis.
+
 ## Documentation
 
-The complete v1 product documentation lives in [`docs/`](./docs):
+Current documentation lives in [`docs/`](./docs):
 
-- [`docs/product-spec.md`](./docs/product-spec.md) — complete product specification.
-- [`docs/user-stories.md`](./docs/user-stories.md) — personas, epics, user stories, and acceptance criteria.
-- [`docs/data-models.md`](./docs/data-models.md) — TypeScript-oriented data models for signals, sources, watchlist items, and settings.
-- [`docs/page-wireframes.md`](./docs/page-wireframes.md) — text wireframes for Today, Watchlist, Sources, Settings, and Archive.
-- [`docs/ranking-logic.md`](./docs/ranking-logic.md) — mock ranking algorithm, scoring factors, filters, and pseudocode.
-- [`docs/source-architecture.md`](./docs/source-architecture.md) — source registry and future ingestion architecture.
-- [`docs/roadmap.md`](./docs/roadmap.md) — phased roadmap from mock MVP to ingestion, persistence, and daily briefing generation.
-- [`docs/implementation-plan.md`](./docs/implementation-plan.md) — recommended file structure and build sequence.
-- [`docs/v1-build-plan.md`](./docs/v1-build-plan.md) — exact implementation order for the first mock-data MVP build.
-- [`docs/build-2-demo-qa.md`](./docs/build-2-demo-qa.md) — quick Build 2 demo-readiness checklist.
-
-## v1 mock-data-only scope
-
-BioIntel v1 validates the product experience before real ingestion is added. It uses local mock data for:
-
-- Signals.
-- Source trails.
-- Watchlist items.
-- Source settings.
-- User preferences.
-- Archive items.
-
-The v1 build intentionally does not include real APIs, external feeds, authentication, or a database.
-
-## Suggested next step
-
-Build 3 should preserve the mock-data-first boundary while improving the product proof: add persistence for local preferences, richer source-comparison views, saved briefing export, and demo-script polish before introducing real ingestion.
+- [`docs/product-spec.md`](./docs/product-spec.md)
+- [`docs/source-architecture.md`](./docs/source-architecture.md)
+- [`docs/build-3-real-ingestion.md`](./docs/build-3-real-ingestion.md)
+- [`docs/build-4-ingestion-quality.md`](./docs/build-4-ingestion-quality.md)

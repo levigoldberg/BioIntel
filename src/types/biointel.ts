@@ -18,7 +18,11 @@ export type EvidenceStatus =
   | "Confirmed"
   | "Emerging"
   | "Speculative"
-  | "Conflicting";
+  | "Conflicting"
+  | "Regulatory source"
+  | "Scientific literature"
+  | "Clinical trial registry"
+  | "Industry news";
 export type SourceType =
   | "Primary source"
   | "Industry news"
@@ -53,6 +57,12 @@ export type SectionFilter =
   | "Saved";
 export type DetailDepth = "Quick skim" | "Standard" | "Detailed analyst";
 export type ToneDepth = "Concise" | "Balanced" | "Deep analyst";
+export type SignalOrigin = "Real";
+export type SourceConnectionStatus =
+  | "Connected"
+  | "Planned"
+  | "Disabled"
+  | "Error";
 
 export interface SignalTag {
   label: string;
@@ -93,6 +103,8 @@ export interface Signal {
   generatedAt: string;
   saved: boolean;
   section: SectionFilter;
+  origin?: SignalOrigin;
+  externalUrl?: string;
 }
 
 export interface WatchlistItem {
@@ -116,6 +128,7 @@ export interface SourceDefinition {
   biasRisk: "Low" | "Medium" | "High";
   requiresPrimaryConfirmation: boolean;
   usefulFor: string;
+  connectionStatus?: SourceConnectionStatus;
 }
 
 export interface BriefingSettings {

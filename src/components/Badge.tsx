@@ -31,7 +31,11 @@ export function toneForTrust(label: string): Tone {
   if (
     label.includes("Very high") ||
     label.includes("Primary confirmed") ||
-    label === "Confirmed"
+    label === "Confirmed" ||
+    label === "Regulatory source" ||
+    label === "Scientific literature" ||
+    label === "Clinical trial registry" ||
+    label === "Industry news"
   )
     return "green";
   if (

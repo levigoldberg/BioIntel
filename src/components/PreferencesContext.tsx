@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { defaultSettings } from "@/src/data/mockData";
+import { defaultSettings } from "@/src/data/defaultData";
 import type { BriefingSettings } from "@/src/types/biointel";
 
 interface PreferencesContextValue {

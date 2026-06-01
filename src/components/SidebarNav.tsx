@@ -43,10 +43,10 @@ export function SidebarNav() {
         })}
       </nav>
       <div className="mt-6 hidden rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 md:block">
-        <p className="font-semibold text-slate-900">Build 1 scope</p>
+        <p className="font-semibold text-slate-900">Live-source scope</p>
         <p className="mt-1">
-          Frontend-only prototype using local mock data. Source trust and
-          evidence status stay visible.
+          Server-side public source ingestion with source trust and evidence
+          status visible in every signal.
         </p>
       </div>
     </aside>

@@ -6,7 +6,7 @@ import { PreferencesProvider } from "@/src/components/PreferencesContext";
 
 export const metadata: Metadata = {
   title: "BioIntel Briefing",
-  description: "Mock-data biotech intelligence dashboard prototype.",
+  description: "Source-backed biotech and pharma intelligence dashboard.",
 };
 
 export default function RootLayout({
