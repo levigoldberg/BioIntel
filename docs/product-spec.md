@@ -75,7 +75,20 @@ The product should make source quality, evidence strength, and user relevance vi
 - **Actionable brevity:** help users decide whether to save, track, ignore, or investigate.
 - **Beginner-readable implementation:** favor clear components and types over clever abstractions.
 
-## 6. MVP technical stack
+
+## 6. v1 scope audit decisions
+
+This audit tightens the specification before implementation. The following decisions resolve contradictions and reduce v1 complexity:
+
+- **Today is the product center.** Build Today first and make it the most polished route. Watchlist, Sources, Settings, and Archive exist to explain or support the Today briefing.
+- **Mock data means mock data.** v1 must not include real ingestion, scraping, external APIs, authentication, a database, background jobs, or AI summarization.
+- **Signals remain the core unit.** Do not build generic article lists. Each item in the feed is a structured signal with a source trail.
+- **Every signal needs trust context.** Cards and detail views must expose confidence, source status, source transparency, and why the signal matters.
+- **Settings are defaults, not an analyst workbench.** v1 should use a short list of practical knobs instead of event-priority sliders and dozens of evidence toggles.
+- **Archive is lightweight.** Archive should show mock past briefings and saved items only; it is not a full historical research database in v1.
+- **Ranking must be explainable.** Use simple local scoring that can produce clear “why you are seeing this” copy.
+
+## 7. MVP technical stack
 
 - Next.js with App Router.
 - TypeScript.
@@ -87,7 +100,7 @@ The product should make source quality, evidence strength, and user relevance vi
 - No database.
 - No external APIs.
 
-## 7. Information architecture
+## 8. Information architecture
 
 Primary navigation:
 
@@ -107,7 +120,7 @@ Primary navigation:
 5. **Archive**
    - Past briefings, saved signals, search, and filters.
 
-## 8. Core entities
+## 9. Core entities
 
 - Signal.
 - Source trail item.
@@ -119,7 +132,7 @@ Primary navigation:
 
 Detailed TypeScript-oriented data models are in [`docs/data-models.md`](./data-models.md).
 
-## 9. Required mock signal coverage
+## 10. Required mock signal coverage
 
 The v1 mock dataset should include at least 12 realistic signals across:
 
@@ -155,7 +168,7 @@ Each signal should contain:
 - `date`.
 - `saved`.
 
-## 10. Page requirements
+## 11. Page requirements
 
 Detailed wireframes are in [`docs/page-wireframes.md`](./page-wireframes.md).
 
@@ -234,12 +247,18 @@ Each source should show:
 
 ### Settings
 
-The Settings page exposes main product knobs:
+The Settings page should expose only practical defaults that a user can understand quickly. v1 settings are:
 
-1. Briefing preferences.
-2. Event priorities.
-3. Evidence preferences.
-4. Tone and depth.
+1. Default briefing length: 5, 10, or 20.
+2. Default source mix: Primary only, Balanced, or Broad.
+3. Default analysis mode: Scientist, Consultant, Investor, or Beginner.
+4. Default time window: Last 24h, 3 days, or 7 days.
+5. Include low-confidence signals: on/off.
+6. Include speculative/noisy signals: on/off.
+7. Require primary confirmation for major claims: on/off.
+8. Default detail depth: Quick skim, Standard, or Detailed analyst.
+
+Do not build event-priority sliders, per-evidence-type toggle grids, notification preferences, account settings, team settings, or API/source credentials in v1.
 
 ### Archive
 
@@ -251,7 +270,7 @@ The Archive page includes:
 - Mock saved items.
 - Search bar.
 
-## 11. Signal card requirements
+## 12. Signal card requirements
 
 Each signal card includes:
 
@@ -278,7 +297,7 @@ Card sizes:
 2. **Standard signal card** for normal updates.
 3. **Compact signal card** for lower-priority matches.
 
-## 12. Detail panel requirements
+## 13. Detail panel requirements
 
 When a signal is selected, the right-side detail panel shows:
 
@@ -295,7 +314,7 @@ When a signal is selected, the right-side detail panel shows:
 
 The source trail should be visually prominent and treated as a first-class UI component.
 
-## 13. Ranking overview
+## 14. Ranking overview
 
 The Today feed should rank visible signals using a transparent mock score. The score combines:
 
@@ -304,14 +323,13 @@ The Today feed should rank visible signals using a transparent mock score. The s
 - Evidence confidence.
 - Source quality.
 - Recency.
-- Event priority settings.
 - Source mix setting.
 - Analysis mode emphasis.
 - Downranking from hidden or “less like this” interactions.
 
 Full ranking rules and pseudocode are in [`docs/ranking-logic.md`](./ranking-logic.md).
 
-## 14. Source architecture overview
+## 15. Source architecture overview
 
 Although v1 uses local mock data only, the information model should anticipate future source ingestion.
 
@@ -330,7 +348,7 @@ Future source architecture should separate:
 
 Full source architecture is in [`docs/source-architecture.md`](./source-architecture.md).
 
-## 15. Component inventory
+## 16. Component inventory
 
 Required components:
 
@@ -354,24 +372,23 @@ Recommended extra components:
 - `EmptyState`.
 - `ToggleSwitch`.
 - `SegmentedControl`.
-- `PrioritySlider`.
 - `TagList`.
 - `EvidenceBadge`.
 - `SignalActions`.
 
-## 16. Interaction requirements
+## 17. Interaction requirements
 
 - Clicking a signal selects it and updates the detail panel.
 - Quick controls update visible state where reasonable.
 - Save button toggles `saved` state.
 - Hide button removes item from visible feed.
 - Section filters filter the feed.
-- Settings controls update local state.
+- Settings controls update local state and are limited to the practical v1 knobs listed above.
 - Watchlist toggles update local state.
 - Source toggles update local state.
 - “Open sources” should reveal or focus the source trail; it should not open real URLs in v1 unless mock URLs are added intentionally.
 
-## 17. Definition of done for v1 prototype
+## 18. Definition of done for v1 prototype
 
 - The app runs locally with `npm run dev` after dependencies are installed.
 - All five primary pages are navigable.
@@ -382,15 +399,15 @@ Recommended extra components:
 - Source trail is clear and visually prominent.
 - Watchlist, Sources, and Settings controls are interactive using local state.
 - Archive search and filters operate on mock data.
-- README explains mock-data-only scope and next steps.
+- README explains mock-data-only scope and points implementation to `docs/v1-build-plan.md`.
 - AGENTS.md instructs future coding agents to preserve the mock-first approach.
 
-## 18. Open product questions for after v1
+## 19. Open product questions for after v1
 
-- Should BioIntel group multiple sources into one canonical signal automatically or expose source-level articles separately?
-- Which user persona should be the default analysis mode for first-time users?
-- Should confidence be shown as a simple label, numeric score, or both?
+These questions should not block the mock-data MVP:
+
+- Should BioIntel group multiple real sources into one canonical signal automatically or expose source-level articles separately?
+- Which persona should become the default analysis mode after user testing?
+- Should confidence remain a simple label or become a numeric score after real evidence scoring exists?
 - How should paywalled trade press be represented in source trails?
-- How much uncertainty should be displayed in the main feed versus detail panel?
-- Should source mix affect inclusion, ranking, or both?
-- Should “less like this” affect only event type, topic, company, or source class?
+- How should “less like this” affect future ranking once persistence exists?

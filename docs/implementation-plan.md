@@ -1,6 +1,6 @@
 # BioIntel v1 Implementation Plan
 
-This plan is for the future build phase. The application should not be built during the documentation phase.
+This plan is for the future build phase. The application should not be built during the documentation phase. When the build starts, follow `docs/v1-build-plan.md` as the source of truth for exact implementation order.
 
 ## Recommended file structure for the build phase
 
@@ -44,6 +44,8 @@ src/
 ```
 
 ## Build sequence
+
+Use [`v1-build-plan.md`](./v1-build-plan.md) for the exact first-build order. The sequence below remains a supporting checklist and should not be used to justify building non-v1 features early.
 
 ### Step 1: Scaffold app
 
@@ -94,8 +96,9 @@ src/
 ### Step 7: Build Settings page
 
 - Implement `SettingsPanel`.
-- Add interactive controls for all required settings.
+- Add only the practical v1 settings: default length, source mix, analysis mode, time window, low-confidence inclusion, speculative/noisy inclusion, primary-confirmation requirement, and detail depth.
 - Keep settings local.
+- Do not add event-priority sliders, notification preferences, account settings, source credentials, or large evidence-toggle matrices.
 
 ### Step 8: Build Archive page
 
@@ -138,6 +141,6 @@ Include at least these example themes:
 - No database is added.
 - No external APIs are called.
 - Source quality is prominent.
-- Today page is the most polished page.
+- Today page is built first and remains the most polished page.
 - Controls are interactive locally.
 - Mobile layout is usable.

@@ -377,55 +377,22 @@ export const starterSources: SourceDefinition[] = [
 
 ## UserSettings
 
+`UserSettings` should stay small in v1. These are defaults for the Today briefing, not a complex preference center.
+
 ```ts
 export interface UserSettings {
-  briefingPreferences: BriefingPreferences;
-  eventPriorities: EventPriorities;
-  evidencePreferences: EvidencePreferences;
-  toneAndDepth: ToneAndDepthPreferences;
-}
-
-export interface BriefingPreferences {
   defaultBriefingLength: BriefingLength;
   defaultSourceMix: SourceMix;
   defaultAnalysisMode: AnalysisMode;
   defaultTimeWindow: TimeWindow;
-  showLowConfidenceItems: boolean;
-  showSpeculativeItems: boolean;
-  showDuplicateCoverage: boolean;
-  includeWhyItMatters: boolean;
-  includeWatchNext: boolean;
-}
-
-export interface EventPriorities {
-  clinicalDataReadouts: number; // 0-100
-  fdaRegulatoryEvents: number;
-  clinicalTrialChanges: number;
-  newPublications: number;
-  maLicensing: number;
-  financing: number;
-  commercialLaunches: number;
-  safetySignals: number;
-  executiveChanges: number;
-  generalCommentary: number;
-}
-
-export interface EvidencePreferences {
-  includePreclinicalStudies: boolean;
-  includeAnimalStudies: boolean;
-  includePreprints: boolean;
-  includeConferenceAbstracts: boolean;
-  includeCompanyClaims: boolean;
-  requirePrimarySourceConfirmationForMajorClaims: boolean;
-  hidePressReleaseOnlyStoriesUnlessHighRelevance: boolean;
-}
-
-export interface ToneAndDepthPreferences {
-  primaryMode: AnalysisMode;
-  secondaryMode: AnalysisMode | 'None';
-  detailLevel: DetailLevel;
+  includeLowConfidenceSignals: boolean;
+  includeSpeculativeSignals: boolean;
+  requirePrimaryConfirmationForMajorClaims: boolean;
+  defaultDetailDepth: DetailLevel;
 }
 ```
+
+Do not add event-priority sliders, large evidence-toggle matrices, notification preferences, account preferences, or source credentials to v1 settings. If future versions need those, add them after the mock Today workflow has been validated.
 
 ## BriefingControls
 

@@ -29,7 +29,8 @@ The complete v1 product documentation lives in [`docs/`](./docs):
 - [`docs/ranking-logic.md`](./docs/ranking-logic.md) — mock ranking algorithm, scoring factors, filters, and pseudocode.
 - [`docs/source-architecture.md`](./docs/source-architecture.md) — source registry and future ingestion architecture.
 - [`docs/roadmap.md`](./docs/roadmap.md) — phased roadmap from mock MVP to ingestion, persistence, and daily briefing generation.
-- [`docs/implementation-plan.md`](./docs/implementation-plan.md) — recommended future build sequence and file structure.
+- [`docs/implementation-plan.md`](./docs/implementation-plan.md) — recommended future file structure and build sequence.
+- [`docs/v1-build-plan.md`](./docs/v1-build-plan.md) — exact implementation order for the first mock-data MVP build.
 
 ## How to install dependencies
 
@@ -62,11 +63,6 @@ BioIntel v1 should validate the product experience before real ingestion is adde
 
 The v1 build should not include real APIs, external feeds, authentication, or a database unless explicitly requested later.
 
-## Suggested next steps
+## Suggested next step
 
-1. Add RSS ingestion.
-2. Add Supabase.
-3. Add OpenAI summarization.
-4. Add ClinicalTrials.gov tracking.
-5. Add PubMed integration.
-6. Add daily briefing generation.
+Build the mock-data MVP in the order defined in [`docs/v1-build-plan.md`](./docs/v1-build-plan.md). Real ingestion, Supabase, OpenAI summarization, ClinicalTrials.gov tracking, PubMed integration, and daily briefing generation are intentionally deferred until after the v1 prototype proves the Today-centered signal workflow.
